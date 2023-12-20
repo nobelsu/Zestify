@@ -21,7 +21,7 @@ export default function Store() {
   const [hearted, setHearted] = useState(false); // adjust based on data stored
 
   return (
-    <View style={{ height: "100%", width: "100%", backgroundColor: "#d6d6d6" }}>
+    <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
       <View style={{ flex: 1 }}>
         <ImageBackground
           source={{
@@ -85,7 +85,7 @@ export default function Store() {
                     uri: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
                   }}
                   style={{
-                    width: "60%",
+                    width: "55%",
                     aspectRatio: 1,
                     borderRadius: 5000,
                     marginLeft: "15%",
@@ -129,49 +129,62 @@ export default function Store() {
         </ImageBackground>
       </View>
       <View style={{ flex: 2.5 }}>
-        <View
+        <Text
           style={{
-            flexDirection: "row",
-            height: "8%",
-            backgroundColor: "white",
+            fontSize: 24,
+            fontWeight: 900,
+            color: "#400235",
+            marginLeft: "5%",
+            marginTop: "5%",
+            marginRight: "5%",
           }}
         >
-          <Text
+          TOUS les JOURS
+        </Text>
+        <View style={{ flexDirection: "row" }}>
+          <View
             style={{
-              fontSize: 24,
-              fontWeight: 900,
-              marginTop: "3%",
+              width: "20%",
+              backgroundColor: "#30D9BA",
+              padding: "1%",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 5,
+              marginTop: 10,
               marginLeft: "5%",
-              flex: 7,
-              color: "#400235",
             }}
           >
-            TOUS les JOURS
-          </Text>
-          <View
-            style={{ flex: 3, justifyContent: "center", alignItems: "center" }}
-          >
-            <View
+            <Text
               style={{
-                width: "70%",
-                backgroundColor: "#30D9BA",
-                height: "70%",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 5,
-                marginTop: 10,
+                color: "white",
+                fontSize: 16,
+                fontWeight: 900,
               }}
             >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 18,
-                  fontWeight: 900,
-                }}
-              >
-                3 left
-              </Text>
-            </View>
+              3 left
+            </Text>
+          </View>
+          <View
+            style={{
+              width: "20%",
+              backgroundColor: "#BF41B7",
+              padding: "1%",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 5,
+              marginTop: 10,
+              marginLeft: "2%",
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontSize: 16,
+                fontWeight: 900,
+              }}
+            >
+              $4.99
+            </Text>
           </View>
         </View>
         <View
@@ -283,34 +296,30 @@ export default function Store() {
             Highlights
           </Text>
           <Badge id={0} />
-          <View style={{ height: 100 }}></View>
         </ScrollView>
       </View>
       <View
         style={{
-          flex: 0.4,
-          backgroundColor: "transparent",
+          flex: 0.3,
+          backgroundColor: "white",
           flexDirection: "row",
-          position: "absolute",
-          marginTop: "185%",
           width: "100%",
-          height: "15%",
           justifyContent: "center",
-          alignItems: "center",
+          paddingTop: "2%",
         }}
       >
         <Pressable
           style={{
             width: "35%",
             backgroundColor: "#30D9BA",
-            height: "50%",
-            marginRight: "5%",
-            borderRadius: "20%",
+            height: "55%",
+            marginRight: "2%",
+            borderRadius: "10%",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "white", fontSize: 18, fontWeight: 900 }}>
+          <Text style={{ color: "white", fontSize: 16, fontWeight: 900 }}>
             Reserve
           </Text>
         </Pressable>
@@ -318,171 +327,19 @@ export default function Store() {
           style={{
             width: "35%",
             backgroundColor: "#BF41B7",
-            height: "50%",
-            marginLeft: "5%",
-            borderRadius: "20%",
+            height: "55%",
+            marginLeft: "2%",
+            borderRadius: "10%",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "white", fontSize: 18, fontWeight: 900 }}>
+          <Text style={{ color: "white", fontSize: 16, fontWeight: 900 }}>
             Order
           </Text>
         </Pressable>
       </View>
     </View>
-    //   <View style={{ height: "100%", width: "100%" }}>
-
-    //     <View style={{ flex: 2, backgroundColor: "white" }}>
-    //       <ImageBackground
-    //         source={{
-    //           uri: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
-    //         }} // replace with banner
-    //         style={{
-    //           height: "100%",
-    //           width: "100%",
-    //         }}
-    //       >
-    //         <View
-    //           style={{
-    //             backgroundColor: "rgba(0, 0, 0, 0.5)",
-    //             width: "100%",
-    //             flex: 1,
-    //           }}
-    //         >
-    //           <View
-    //             style={{
-    //               flexDirection: "row",
-    //               flex: 1,
-    //               width: "100%",
-    //             }}
-    //           >
-    //             <View style={{ flex: 1 }}>
-    //               <Ionicons
-    //                 name="arrow-back-outline"
-    //                 color="white"
-    //                 size={36}
-    //                 style={{
-    //                   marginTop: "20%",
-    //                   marginLeft: "10%",
-    //                 }}
-    //               />
-    //             </View>
-
-    //             <View
-    //               style={{
-    //                 flex: 1,
-    //               }}
-    //             >
-    //               <Ionicons
-    //                 name={hearted ? "heart" : "heart-outline"}
-    //                 color={hearted ? "#9591F2" : "white"}
-    //                 size={36}
-    //                 style={{
-    //                   marginLeft: "70%",
-    //                   paddingLeft: 6,
-    //                   paddingTop: 6,
-    //                   marginTop: "20%",
-    //                   backgroundColor: "rgba(0, 0, 0, 0.4)",
-    //                   width: 48,
-    //                   height: 48,
-    //                   // borderRadius: "50%",
-    //                 }}
-    //                 onPress={heartStatus}
-    //               />
-    //             </View>
-    //           </View>
-    //           <View style={{ flexDirection: "row", flex: 2 }}>
-    //             <View
-    //               style={{
-    //                 flex: 1,
-    //                 marginLeft: "5%",
-    //                 marginTop: "15%",
-    //               }}
-    //             >
-    //               <Image
-    //                 source={{
-    //                   uri: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
-    //                 }}
-    //                 style={{
-    //                   width: "40%",
-    //                   aspectRatio: 1,
-    //                   // borderRadius: "50%"
-    //                 }}
-    //               />
-    //             </View>
-    //             <View
-    //               style={{
-    //                 backgroundColor: "#BF4904",
-    //                 flex: 1,
-    //                 marginTop: "7%",
-    //                 // borderRadius: "10%",
-    //                 justifyContent: "center",
-    //               }}
-    //             >
-    //               <Text
-    //                 style={{
-    //                   fontSize: 13,
-    //                   textAlign: "center",
-    //                   fontWeight: 300,
-    //                   color: "#7a8799",
-    //                   textDecorationLine: "line-through",
-    //                 }}
-    //               >
-    //                 $14.99
-    //               </Text>
-    //               <Text
-    //                 style={{
-    //                   fontSize: 18,
-    //                   textAlign: "center",
-    //                   fontWeight: 900,
-    //                   color: "#CEDEF2",
-    //                 }}
-    //               >
-    //                 $4.99
-    //               </Text>
-    //             </View>
-    //           </View>
-    //         </View>
-    //       </ImageBackground>
-    //     </View>
-    //     <View style={{ flex: 2, backgroundColor: "white" }}>
-    //       <Text style={[styles.header2, { marginTop: "3%" }]}>
-    //         TOUS les JOURS
-    //       </Text>
-    //       <View style={{ flexDirection: "row", marginTop: "2%" }}>
-    //         <View style={{ flex: 1 }}>
-    //           <Ionicons name="time-outline" size={22} style={{ marginTop: 2 }} />
-    //         </View>
-    //         <View style={{ flex: 8 }}>
-    //           <Text
-    //             style={[styles.header3, { width: "100%", marginLeft: "10%" }]}
-    //           >
-    //             15:00-17:00
-    //           </Text>
-    //         </View>
-    //       </View>
-    //     </View>
-    //     <View style={{ flex: 1 }}>
-    //       <Text
-    //         style={[
-    //           styles.header3,
-    //           {
-    //             width: "100%",
-    //             textAlign: "center",
-    //             color: "#3876F2",
-    //             fontWeight: 700,
-    //           },
-    //         ]}
-    //       >
-    //         7085 Sage St. Oviedo, FL 32765
-    //       </Text>
-    //     </View>
-    //     <ScrollView style={{ flex: 11 }}>
-    //       <Text></Text>
-    //       <Text></Text>
-    //     </ScrollView>
-    //   </View>
   );
 }
 
