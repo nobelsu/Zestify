@@ -12,6 +12,7 @@
     "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^19.0.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native": "^6.1.9",
     "expo": "~49.0.15",
     "expo-status-bar": "~1.6.0",

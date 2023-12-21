@@ -37,6 +37,8 @@ export default function Badge(props) {
         alignItems: "center",
         marginTop: 10,
         marginBottom: 20,
+        shadowRadius: 10,
+        shadowOpacity: 0.7,
       }}
     >
       <View
