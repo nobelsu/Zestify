@@ -28,6 +28,8 @@ const data = [
     logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
     oriprice: "15.00",
     rating: 0.9,
+    revcnt: 169,
+    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
   },
   {
     id: 1,
@@ -37,6 +39,8 @@ const data = [
     logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
     oriprice: "15.00",
     rating: 0.9,
+    revcnt: 169,
+    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
   },
   {
     id: 2,
@@ -46,6 +50,8 @@ const data = [
     logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
     oriprice: "15.00",
     rating: 0.9,
+    revcnt: 169,
+    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
   },
   {
     id: 3,
@@ -55,6 +61,8 @@ const data = [
     logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
     oriprice: "15.00",
     rating: 0.9,
+    revcnt: 169,
+    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
   },
 ];
 const SCWIDTH = Dimensions.get("window").width;
@@ -92,6 +100,255 @@ export default function Home() {
           }}
         >
           Check out the latest deals!
+        </Text>
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          snapToAlignment="center"
+          snapToInterval={SCWIDTH}
+          decelerationRate={"fast"}
+          data={data}
+          keyExtractor={(item) => item.id}
+          style={{ marginTop: "3%" }}
+          renderItem={({ item }) => {
+            return (
+              <View
+                style={{
+                  height: 200,
+                  width: SCWIDTH * 0.9,
+                  marginLeft: SCWIDTH * 0.05,
+                  marginRight: SCWIDTH * 0.05,
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  alignItems: "center",
+                }}
+              >
+                <ImageBackground
+                  source={{ uri: item.url }}
+                  style={{
+                    width: SCWIDTH * 0.9,
+                    aspectRatio: 5,
+                  }}
+                  imageStyle={{
+                    borderTopRightRadius: 10,
+                    borderTopLeftRadius: 10,
+                  }}
+                >
+                  <Image
+                    source={{ uri: item.logo }}
+                    style={{
+                      width: SCWIDTH * 0.2,
+                      marginLeft: SCWIDTH * 0.03,
+                      marginTop: SCWIDTH * 0.03,
+                      aspectRatio: 1,
+                      borderRadius: 5000,
+                      borderWidth: 2,
+                      borderColor: "white",
+                    }}
+                  />
+                </ImageBackground>
+                <View style={{ flexDirection: "row" }}>
+                  <View style={{ flex: 2 }}>
+                    <Text
+                      style={{
+                        marginTop: SCWIDTH * 0.07,
+                        marginLeft: SCWIDTH * 0.03,
+                        fontWeight: 400,
+                        fontSize: 14,
+                      }}
+                      numberOfLines={1}
+                    >
+                      {data[item.id].name}
+                    </Text>
+                    <Text
+                      style={{
+                        marginLeft: SCWIDTH * 0.03,
+                        fontWeight: 200,
+                        fontSize: 12,
+                        textAlign: "justify",
+                      }}
+                      numberOfLines={3}
+                    >
+                      {data[item.id].desc}
+                    </Text>
+                    <Text
+                      style={{
+                        marginLeft: SCWIDTH * 0.03,
+                        fontWeight: 900,
+                        fontSize: 12,
+                        color: "#BF41B7",
+                        marginTop: 10,
+                      }}
+                    >
+                      See more
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        textDecorationLine: "line-through",
+                        textDecorationStyle: "solid",
+                        color: "grey",
+                        marginLeft: 30,
+                        marginTop: 28,
+                      }}
+                    >
+                      ${data[item.id].oriprice}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 22,
+                        fontWeight: 700,
+                        marginTop: "1%",
+                        marginLeft: 30,
+                      }}
+                    >
+                      ${data[item.id].price}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            );
+          }}
+        />
+        <Text
+          style={{
+            marginTop: "6%",
+            fontSize: 20,
+            fontWeight: 600,
+            marginLeft: "5%",
+          }}
+        >
+          Recommended
+        </Text>
+        <Text
+          style={{
+            fontSize: 13,
+            fontWeight: 200,
+            marginLeft: "5%",
+            marginTop: "1%",
+          }}
+        >
+          Based on your past activity!
+        </Text>
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={data}
+          keyExtractor={(item) => item.id}
+          style={{ marginLeft: "5%", marginTop: "3%" }}
+          renderItem={({ item }) => {
+            return (
+              <View
+                style={{
+                  height: 250,
+                  width: SCWIDTH * 0.35,
+                  marginRight: SCWIDTH * 0.02,
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  alignItems: "center",
+                }}
+              >
+                <ImageBackground
+                  source={{ uri: item.url }}
+                  style={{
+                    width: SCWIDTH * 0.35,
+                    aspectRatio: 1.5,
+                  }}
+                  imageStyle={{
+                    borderTopRightRadius: 10,
+                    borderTopLeftRadius: 10,
+                  }}
+                >
+                  <Image
+                    source={{ uri: item.logo }}
+                    style={{
+                      width: SCWIDTH * 0.2,
+                      marginLeft: SCWIDTH * 0.075,
+                      marginTop: SCWIDTH * 0.125,
+                      aspectRatio: 1,
+                      borderRadius: 5000,
+                      borderWidth: 2,
+                      borderColor: "white",
+                    }}
+                  />
+                </ImageBackground>
+                <Text
+                  style={{
+                    marginTop: SCWIDTH * 0.1,
+                    width: "80%",
+                    textAlign: "center",
+                    fontWeight: 400,
+                    fontSize: 14,
+                  }}
+                  numberOfLines={1}
+                >
+                  {data[item.id].name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    marginTop: "4%",
+                    textDecorationLine: "line-through",
+                    textDecorationStyle: "solid",
+                    color: "grey",
+                  }}
+                >
+                  ${data[item.id].oriprice}
+                </Text>
+                <Text
+                  style={{ fontSize: 18, fontWeight: 700, marginTop: "1%" }}
+                >
+                  ${data[item.id].price}
+                </Text>
+                <Text
+                  style={{
+                    marginTop: "10%",
+                    color: "#BF41B7",
+                    marginBottom: "1%",
+                    fontWeight: 500,
+                    fontSize: 12,
+                  }}
+                >
+                  Rating:{" "}
+                  <Text style={{ fontWeight: 900 }}>
+                    {data[item.id].rating * 5}/5
+                  </Text>
+                </Text>
+                <Progress.Bar
+                  progress={data[item.id].rating}
+                  width={SCWIDTH * 0.25}
+                  color="#BF41B7"
+                  height={8}
+                />
+              </View>
+            );
+          }}
+        />
+        <Text
+          style={{
+            marginTop: "6%",
+            fontSize: 20,
+            fontWeight: 600,
+            marginLeft: "5%",
+          }}
+        >
+          Trending
+        </Text>
+        <Text
+          style={{
+            fontSize: 13,
+            fontWeight: 200,
+            marginLeft: "5%",
+            marginTop: "1%",
+          }}
+        >
+          What others are loving!
         </Text>
         <FlatList
           horizontal
