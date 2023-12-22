@@ -21,9 +21,9 @@ export default function Store() {
   const [hearted, setHearted] = useState(false); // adjust based on data stored
 
   return (
-    <View style={{ height: "100%", width: "100%", backgroundColor: "grey" }}>
+    <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
       <ScrollView style={{ flex: 3.5 }}>
-        <View style={{ flex: 1 }}>
+        <View style={{ height: "25%" }}>
           <ImageBackground
             source={{
               uri: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
@@ -67,8 +67,6 @@ export default function Store() {
                     size={36}
                     style={{
                       marginLeft: "70%",
-                      paddingLeft: 6,
-                      paddingTop: 6,
                       marginTop: "30%",
                       width: 48,
                       height: 48,
@@ -105,7 +103,7 @@ export default function Store() {
                     style={{
                       color: "white",
                       marginBottom: "2%",
-                      fontWeight: 900,
+                      fontWeight: 500,
                       width: 200,
                     }}
                   >
@@ -122,7 +120,7 @@ export default function Store() {
             </View>
           </ImageBackground>
         </View>
-        <View style={{ flex: 2.5, backgroundColor: "white" }}>
+        <View style={{ backgroundColor: "white" }}>
           <Text
             style={{
               fontSize: 24,
@@ -150,8 +148,7 @@ export default function Store() {
               <Text
                 style={{
                   color: "white",
-                  fontSize: 16,
-                  fontWeight: 900,
+                  fontSize: 14,
                 }}
               >
                 3 left
@@ -172,8 +169,7 @@ export default function Store() {
               <Text
                 style={{
                   color: "white",
-                  fontSize: 16,
-                  fontWeight: 900,
+                  fontSize: 14,
                 }}
               >
                 $4.99
@@ -297,6 +293,7 @@ export default function Store() {
                 paddingTop: 4,
                 paddingBottom: 4,
                 marginTop: 8,
+                marginBottom: "10%",
                 width: "100%",
               }}
             >
@@ -315,7 +312,7 @@ export default function Store() {
       </ScrollView>
       <View
         style={{
-          flex: 0.3,
+          flex: 0.1,
           backgroundColor: "white",
           flexDirection: "row",
           width: "100%",
