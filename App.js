@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Home from "./components/Home";
 import Store from "./components/Store";
+import Login from "./components/Login";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,6 +15,7 @@ export default function App() {
       <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Store" component={Store} />
+        <Tab.Screen name="Log" component={Login} />
       </Tab.Navigator>
     </NavigationContainer>
   );
