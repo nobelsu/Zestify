@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -20,24 +20,13 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase";
-import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-
+import { createUserWithEmailAndPassword } from "firebase/auth";
 const SCWIDTH = Dimensions.get("window").width;
 
-export default function Login() {
+export default function Register() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("logged in");
-        navigation.navigate("Home");
-      } else console.log("not logged in");
-    });
-  });
-
   return (
     <View
       style={{
@@ -60,16 +49,16 @@ export default function Login() {
             fontWeight: 800,
           }}
         >
-          Login
+          Register
         </Text>
         <Text style={{ marginTop: 5, fontSize: 14, fontWeight: 200 }}>
-          Don't have an account yet?{" "}
+          Have an account already?{" "}
           <Pressable
             onPress={() => {
-              navigation.navigate("Register");
+              navigation.navigate("Login");
             }}
           >
-            <Text>Register now!</Text>
+            <Text style={{ color: "red" }}>Login now!</Text>
           </Pressable>
         </Text>
         <View
@@ -162,15 +151,16 @@ export default function Login() {
         }}
         onPress={async () => {
           try {
+            await createUserWithEmailAndPassword(auth, email, password);
             await signInWithEmailAndPassword(auth, email, password);
             navigation.navigate("Home");
           } catch (error) {
-            console.log(error);
+            console.log(error.message);
           }
         }}
       >
         <Text style={{ color: "#BF41B7", fontSize: 16, fontWeight: 500 }}>
-          Login
+          Register
         </Text>
       </Pressable>
     </View>
