@@ -24,19 +24,28 @@ import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 
 const SCWIDTH = Dimensions.get("window").width;
 
+const codes = {
+  "auth/invalid-email": {
+    id: 1,
+    msg: "Invalid email!",
+  },
+  "auth/missing-password": {
+    id: 2,
+    msg: "Missing password!",
+  },
+  "auth/invalid-credential": {
+    id: 3,
+    msg: "Invalid credentials!",
+  },
+};
+
 export default function Login() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("logged in");
-        navigation.navigate("Home");
-      } else console.log("not logged in");
-    });
-  });
+  const [emailValid, setEmailValid] = useState(true);
+  const [passValid, setPassValid] = useState(true);
+  const [codee, setCodee] = useState("");
 
   return (
     <View
@@ -64,13 +73,14 @@ export default function Login() {
         </Text>
         <Text style={{ marginTop: 5, fontSize: 14, fontWeight: 200 }}>
           Don't have an account yet?{" "}
-          <Pressable
+          <Text
+            style={{ color: "#BF41B7" }}
             onPress={() => {
               navigation.navigate("Register");
             }}
           >
-            <Text>Register now!</Text>
-          </Pressable>
+            Register now!
+          </Text>
         </Text>
         <View
           style={{
@@ -86,6 +96,7 @@ export default function Login() {
           <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
             EMAIL
           </Text>
+
           <View style={{ flexDirection: "row", marginTop: 5 }}>
             <Ionicons
               name={"mail-outline"}
@@ -107,6 +118,36 @@ export default function Login() {
               }}
             />
           </View>
+        </View>
+        <View>
+          {!emailValid ? (
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 5,
+                alignItems: "center",
+                marginLeft: 15,
+              }}
+            >
+              <Ionicons
+                name="alert-circle-outline"
+                size={18}
+                style={{ color: "red" }}
+              />
+              <Text
+                style={{
+                  color: "red",
+                  marginLeft: 5,
+                  fontSize: 12,
+                  fontWeight: 300,
+                }}
+              >
+                {codee}
+              </Text>
+            </View>
+          ) : (
+            <View />
+          )}
         </View>
         <View
           style={{
@@ -145,8 +186,37 @@ export default function Login() {
             />
           </View>
         </View>
+        <View>
+          {!passValid ? (
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 5,
+                alignItems: "center",
+                marginLeft: 15,
+              }}
+            >
+              <Ionicons
+                name="alert-circle-outline"
+                size={18}
+                style={{ color: "red" }}
+              />
+              <Text
+                style={{
+                  color: "red",
+                  marginLeft: 5,
+                  fontSize: 12,
+                  fontWeight: 300,
+                }}
+              >
+                {codee}
+              </Text>
+            </View>
+          ) : (
+            <View />
+          )}
+        </View>
       </View>
-
       <Pressable
         style={{
           width: "90%",
@@ -161,11 +231,15 @@ export default function Login() {
           borderColor: "#BF41B7",
         }}
         onPress={async () => {
+          setEmailValid(1);
+          setPassValid(1);
           try {
             await signInWithEmailAndPassword(auth, email, password);
             navigation.navigate("Home");
           } catch (error) {
-            console.log(error);
+            setCodee(codes[error.code].msg);
+            if (codes[error.code].id > 1) setPassValid(0);
+            else setEmailValid(0);
           }
         }}
       >

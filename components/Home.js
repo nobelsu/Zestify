@@ -67,14 +67,44 @@ const data = [
 ];
 const SCWIDTH = Dimensions.get("window").width;
 
-export default function Home() {
+export default function Home({ route }) {
   return (
     <View style={{ height: "100%", width: "100%" }}>
+      <View
+        style={{
+          width: "95%",
+          marginLeft: "2.5%",
+          height: 50,
+          marginTop: "15%",
+          backgroundColor: "white",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "row",
+          borderRadius: 20,
+          marginBottom: "3%",
+        }}
+      >
+        <Ionicons name="search-outline" size={22} />
+        <TextInput
+          placeholder="Search..."
+          style={{
+            width: SCWIDTH * 0.7,
+            height: 30,
+            marginLeft: 8,
+            marginRight: 8,
+            padding: 5,
+            fontSize: 14,
+          }}
+        />
+        <Pressable>
+          <Ionicons name="options-outline" size={25} />
+        </Pressable>
+      </View>
       <ScrollView style={{ height: "100%" }}>
         <Text
           style={{
             marginLeft: "5%",
-            marginTop: "18%",
+            marginTop: "5%",
             fontSize: 30,
             fontWeight: 900,
           }}

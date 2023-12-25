@@ -8,6 +8,7 @@ import Store from "./components/Store";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import { createStackNavigator } from "@react-navigation/stack";
+import Splash from "./components/Splash";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen
