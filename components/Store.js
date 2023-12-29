@@ -20,6 +20,7 @@ import Badge from "./Badge";
 export default function Store() {
   const navigation = useNavigation();
   const [hearted, setHearted] = useState(false); // adjust based on data stored
+  const [numLines, setnumLines] = useState(3);
 
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
@@ -131,19 +132,96 @@ export default function Store() {
           </ImageBackground>
         </View>
         <View style={{ backgroundColor: "white" }}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: 900,
-              marginLeft: "5%",
-              marginTop: "5%",
-              marginRight: "5%",
-            }}
-          >
-            TOUS les JOURS
-          </Text>
           <View style={{ flexDirection: "row" }}>
+            <View style={{ flex: 2.5 }}>
+              <Text
+                style={{
+                  fontSize: 24,
+                  fontWeight: 900,
+                  marginLeft: "5%",
+                  marginTop: "5%",
+                  marginRight: "5%",
+                  flex: 2,
+                }}
+              >
+                TOUS les JOURS
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  paddingTop: 10,
+                  paddingLeft: "5%",
+                  width: "100%",
+                  backgroundColor: "white",
+                }}
+              >
+                <Ionicons
+                  name="time-outline"
+                  size={20}
+                  style={{ marginRight: "1%", color: "#BF41B7" }}
+                />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    marginTop: 1,
+                    fontWeight: 300,
+                    width: "90%",
+                  }}
+                >
+                  Today 15:00-17:00
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  paddingTop: 5,
+                  paddingLeft: "5%",
+                  width: "100%",
+                  backgroundColor: "white",
+                  paddingBottom: 8,
+                }}
+              >
+                <Ionicons
+                  name="location-outline"
+                  size={20}
+                  style={{ marginRight: "1%", color: "#BF41B7" }}
+                />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    marginTop: 1,
+                    fontWeight: 300,
+                    width: "90%",
+                    paddingBottom: 4,
+                  }}
+                >
+                  53 South Carriage Dr. Tuscaloosa, AL 35405
+                </Text>
+              </View>
+            </View>
+
             <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  textDecorationLine: "line-through",
+                  textDecorationStyle: "solid",
+                  color: "grey",
+                }}
+              >
+                $15.00
+              </Text>
+              <Text style={{ fontSize: 28, fontWeight: 700 }}>$4.99</Text>
+            </View>
+          </View>
+
+          <View style={{ flexDirection: "row" }}>
+            {/* <View
               style={{
                 width: "20%",
                 backgroundColor: "#30D9BA",
@@ -151,7 +229,6 @@ export default function Store() {
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 5,
-                marginTop: 10,
                 marginLeft: "5%",
               }}
             >
@@ -163,8 +240,8 @@ export default function Store() {
               >
                 3 left
               </Text>
-            </View>
-            <View
+            </View> */}
+            {/* <View
               style={{
                 width: "20%",
                 backgroundColor: "#177359",
@@ -172,7 +249,7 @@ export default function Store() {
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 5,
-                marginTop: 10,
+
                 marginLeft: "2%",
               }}
             >
@@ -184,60 +261,9 @@ export default function Store() {
               >
                 $4.99
               </Text>
-            </View>
+            </View> */}
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              paddingTop: 10,
-              paddingLeft: "5%",
-              width: "100%",
-              backgroundColor: "white",
-            }}
-          >
-            <Ionicons
-              name="time-outline"
-              size={20}
-              style={{ marginRight: "1%", color: "#BF41B7" }}
-            />
-            <Text
-              style={{
-                fontSize: 14,
-                marginTop: 1,
-                fontWeight: 300,
-                width: "90%",
-              }}
-            >
-              Today 15:00-17:00
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              paddingTop: 5,
-              paddingLeft: "5%",
-              width: "100%",
-              backgroundColor: "white",
-              paddingBottom: 8,
-            }}
-          >
-            <Ionicons
-              name="location-outline"
-              size={20}
-              style={{ marginRight: "1%", color: "#BF41B7" }}
-            />
-            <Text
-              style={{
-                fontSize: 14,
-                marginTop: 1,
-                fontWeight: 300,
-                width: "90%",
-                paddingBottom: 4,
-              }}
-            >
-              53 South Carriage Dr. Tuscaloosa, AL 35405
-            </Text>
-          </View>
+
           <View
             style={{
               paddingLeft: "5%",
@@ -263,6 +289,7 @@ export default function Store() {
                   marginTop: 8,
                   fontWeight: 200,
                 }}
+                numberOfLines={numLines}
               >
                 With a commitment to using only the finest ingredients, our
                 products are known for their unique flavors and wholesome
@@ -270,6 +297,15 @@ export default function Store() {
                 treats that are freshly baked and ready to be enjoyed by our
                 customers seeking exceptional taste and quality.
               </Text>
+            </View>
+            <View>
+              <Pressable
+                onPress={() => {
+                  setnumLines(100);
+                }}
+              >
+                <Text>See more...</Text>
+              </Pressable>
             </View>
             <View
               style={{

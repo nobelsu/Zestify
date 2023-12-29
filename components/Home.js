@@ -203,20 +203,23 @@ export default function Home() {
                     >
                       {data[item.id].desc}
                     </Text>
-                    <Text
-                      style={{
-                        marginLeft: SCWIDTH * 0.03,
-                        fontWeight: 900,
-                        fontSize: 12,
-                        color: "#BF41B7",
-                        marginTop: 10,
-                      }}
+                    <Pressable
                       onPress={() => {
                         navigation.navigate("Store");
                       }}
                     >
-                      See more
-                    </Text>
+                      <Text
+                        style={{
+                          marginLeft: SCWIDTH * 0.03,
+                          fontWeight: 900,
+                          fontSize: 12,
+                          color: "#BF41B7",
+                          marginTop: 10,
+                        }}
+                      >
+                        See more
+                      </Text>
+                    </Pressable>
                   </View>
                   <View
                     style={{
@@ -356,7 +359,6 @@ export default function Home() {
                   />
                   <Text
                     style={{
-                      fontWeight: 500,
                       marginLeft: 3,
                       color: "#BF41B7",
                       fontSize: 12,
@@ -364,7 +366,10 @@ export default function Home() {
                     }}
                     numberOfLines={1}
                   >
-                    {data[item.id].rating * 5} | {data[item.id].revcnt} sold
+                    {data[item.id].rating * 5} |{" "}
+                    <Text style={{ fontWeight: 700 }}>
+                      {data[item.id].revcnt} sold
+                    </Text>
                   </Text>
                 </View>
               </View>
@@ -476,7 +481,6 @@ export default function Home() {
                   />
                   <Text
                     style={{
-                      fontWeight: 500,
                       marginLeft: 3,
                       color: "#BF41B7",
                       fontSize: 12,
@@ -484,7 +488,10 @@ export default function Home() {
                     }}
                     numberOfLines={1}
                   >
-                    {data[item.id].rating * 5} | {data[item.id].revcnt} sold
+                    {data[item.id].rating * 5} |{" "}
+                    <Text style={{ fontWeight: 700 }}>
+                      {data[item.id].revcnt} sold
+                    </Text>
                   </Text>
                 </View>
               </View>
@@ -596,7 +603,6 @@ export default function Home() {
                   />
                   <Text
                     style={{
-                      fontWeight: 500,
                       marginLeft: 3,
                       color: "#BF41B7",
                       fontSize: 12,
@@ -604,7 +610,10 @@ export default function Home() {
                     }}
                     numberOfLines={1}
                   >
-                    {data[item.id].rating * 5} | {data[item.id].revcnt} sold
+                    {data[item.id].rating * 5} |{" "}
+                    <Text style={{ fontWeight: 700 }}>
+                      {data[item.id].revcnt} sold
+                    </Text>
                   </Text>
                 </View>
               </View>
@@ -615,3 +624,4 @@ export default function Home() {
     </View>
   );
 }
+4;

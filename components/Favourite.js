@@ -101,19 +101,40 @@ export default function Favourite() {
           <Ionicons name="options-outline" size={25} />
         </Pressable>
       </View>
-      {/* <ScrollView>
-        <Text
-          style={{
-            marginLeft: "5%",
-            marginTop: "5%",
-            fontSize: 30,
-            fontWeight: 900,
-          }}
-        >
-          Discover
-        </Text>
-        <FlatList />
-      </ScrollView> */}
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          return (
+            <View
+              style={{
+                marginTop: 10,
+                height: SCWIDTH * 0.26,
+                width: SCWIDTH * 0.9,
+                marginLeft: SCWIDTH * 0.05,
+                marginRight: SCWIDTH * 0.05,
+                backgroundColor: "white",
+                borderRadius: 10,
+                flexDirection: "row",
+              }}
+            >
+              <Image
+                source={{ uri: item.logo }}
+                style={{
+                  width: SCWIDTH * 0.2,
+                  marginLeft: SCWIDTH * 0.03,
+                  marginTop: SCWIDTH * 0.03,
+                  aspectRatio: 1,
+                  borderRadius: 5000,
+                  borderWidth: 2,
+                  borderColor: "white",
+                }}
+              />
+              <Text>{item.name}</Text>
+            </View>
+          );
+        }}
+      />
     </View>
   );
 }
