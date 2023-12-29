@@ -21,6 +21,7 @@ export default function Store() {
   const navigation = useNavigation();
   const [hearted, setHearted] = useState(false); // adjust based on data stored
   const [numLines, setnumLines] = useState(3);
+  const [textSee, settextSee] = useState("See more...");
 
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
@@ -298,13 +299,18 @@ export default function Store() {
                 customers seeking exceptional taste and quality.
               </Text>
             </View>
-            <View>
+            <View style={{ marginTop: 3 }}>
               <Pressable
                 onPress={() => {
-                  setnumLines(100);
+                  numLines == 3 ? setnumLines(100) : setnumLines(3);
+                  textSee == "See more..."
+                    ? settextSee("See less...")
+                    : settextSee("See more...");
                 }}
               >
-                <Text>See more...</Text>
+                <Text style={{ fontWeight: 600, color: "#BF41B7" }}>
+                  {textSee}
+                </Text>
               </Pressable>
             </View>
             <View
