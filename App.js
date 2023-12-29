@@ -9,7 +9,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import { createStackNavigator } from "@react-navigation/stack";
 import Splash from "./components/Splash";
-import Favourite from "./components/Favourite";
+import Favourites from "./components/Favourite";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -27,7 +27,7 @@ export default function App() {
             return (
               <Tab.Navigator screenOptions={{ headerShown: false }}>
                 <Tab.Screen name="Home" component={Home} />
-                <Tab.Screen name="Favourite" component={Favourite} />
+                <Tab.Screen name="Favourites" component={Favourites} />
               </Tab.Navigator>
             );
           }}

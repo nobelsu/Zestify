@@ -21,7 +21,7 @@ export default function Store() {
   const navigation = useNavigation();
   const [hearted, setHearted] = useState(false); // adjust based on data stored
   const [numLines, setnumLines] = useState(3);
-  const [textSee, settextSee] = useState("See more...");
+  const [textSee, settextSee] = useState("See more");
 
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
@@ -96,36 +96,13 @@ export default function Store() {
                       uri: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
                     }}
                     style={{
-                      width: "55%",
+                      width: "24%",
                       aspectRatio: 1,
                       borderRadius: 5000,
-                      marginLeft: "15%",
+                      marginLeft: "5%",
                       borderWidth: 2,
                       borderColor: "#BF41B7",
                     }}
-                  />
-                </View>
-                <View
-                  style={{
-                    flex: 1.6,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "white",
-                      marginBottom: "2%",
-                      fontWeight: 500,
-                      width: 200,
-                    }}
-                  >
-                    Rating: 4.5/5
-                  </Text>
-                  <Progress.Bar
-                    progress={0.9}
-                    width={200}
-                    color="#BF41B7"
-                    height={10}
                   />
                 </View>
               </View>
@@ -133,7 +110,7 @@ export default function Store() {
           </ImageBackground>
         </View>
         <View style={{ backgroundColor: "white" }}>
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
             <View style={{ flex: 2.5 }}>
               <Text
                 style={{
@@ -218,6 +195,51 @@ export default function Store() {
                 $15.00
               </Text>
               <Text style={{ fontSize: 28, fontWeight: 700 }}>$4.99</Text>
+              <View
+                style={{
+                  width: "80%",
+                  height: 24,
+                  marginTop: 10,
+                  backgroundColor: "#BF41B7",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 15,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 300,
+                    color: "white",
+                  }}
+                >
+                  3 left
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: "80%",
+                  height: 24,
+                  marginTop: 5,
+                  backgroundColor: "#BF41B7",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 15,
+                  flexDirection: "row",
+                }}
+              >
+                <Ionicons name="star" size={15} style={{ color: "#FDCC0D" }} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 300,
+                    color: "white",
+                    marginLeft: 5,
+                  }}
+                >
+                  4.5
+                </Text>
+              </View>
             </View>
           </View>
 
@@ -303,9 +325,9 @@ export default function Store() {
               <Pressable
                 onPress={() => {
                   numLines == 3 ? setnumLines(100) : setnumLines(3);
-                  textSee == "See more..."
-                    ? settextSee("See less...")
-                    : settextSee("See more...");
+                  textSee == "See more"
+                    ? settextSee("See less")
+                    : settextSee("See more");
                 }}
               >
                 <Text style={{ fontWeight: 600, color: "#BF41B7" }}>

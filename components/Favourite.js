@@ -68,7 +68,8 @@ const data = [
   },
 ];
 
-export default function Favourite() {
+export default function Favourites() {
+  const [hearted, setHearted] = useState(true);
   return (
     <View style={{ height: "100%", width: "100%" }}>
       <View
@@ -101,6 +102,17 @@ export default function Favourite() {
           <Ionicons name="options-outline" size={25} />
         </Pressable>
       </View>
+      <Text
+        style={{
+          marginLeft: "5%",
+          marginTop: "5%",
+          marginBottom: "2%",
+          fontSize: 30,
+          fontWeight: 900,
+        }}
+      >
+        Favourites
+      </Text>
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
@@ -108,30 +120,118 @@ export default function Favourite() {
           return (
             <View
               style={{
-                marginTop: 10,
                 height: SCWIDTH * 0.26,
                 width: SCWIDTH * 0.9,
                 marginLeft: SCWIDTH * 0.05,
-                marginRight: SCWIDTH * 0.05,
                 backgroundColor: "white",
+                marginTop: 10,
                 borderRadius: 10,
                 flexDirection: "row",
+                // justifyContent: "center",
+                // alignItems: "center",
               }}
             >
-              <Image
-                source={{ uri: item.logo }}
+              <ImageBackground
                 style={{
-                  width: SCWIDTH * 0.2,
-                  marginLeft: SCWIDTH * 0.03,
-                  marginTop: SCWIDTH * 0.03,
-                  aspectRatio: 1,
-                  borderRadius: 5000,
-                  borderWidth: 2,
-                  borderColor: "white",
+                  height: SCWIDTH * 0.26,
+                  width: SCWIDTH * 0.28,
                 }}
-              />
-              <Text>{item.name}</Text>
+                imageStyle={{
+                  borderTopLeftRadius: 10,
+                  borderBottomLeftRadius: 10,
+                }}
+                source={{ uri: item.url }}
+              >
+                <Image
+                  source={{ uri: item.logo }}
+                  style={{
+                    width: SCWIDTH * 0.2,
+                    marginLeft: SCWIDTH * 0.15,
+                    marginTop: SCWIDTH * 0.03,
+                    aspectRatio: 1,
+                    borderRadius: 5000,
+                    borderWidth: 2,
+                    borderColor: "white",
+                  }}
+                />
+              </ImageBackground>
+              <View
+                style={{
+                  marginLeft: SCWIDTH * 0.09,
+                  width: SCWIDTH * 0.5,
+
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{ fontSize: 16, fontWeight: 600 }}
+                  numberOfLines={1}
+                >
+                  {item.name}
+                </Text>
+                <View style={{ flexDirection: "row", marginTop: 8 }}>
+                  <Pressable
+                    onPress={() => {
+                      setHearted(!hearted);
+                    }}
+                  >
+                    <Ionicons
+                      name={hearted ? "heart" : "heart-outline"}
+                      color={hearted ? "#BF41B7" : "white"}
+                      size={28}
+                    />
+                  </Pressable>
+                  <Pressable
+                    style={{
+                      width: "75%",
+                      backgroundColor: "white",
+                      marginLeft: "5%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 10,
+                      borderWidth: 2,
+                      borderColor: "#BF41B7",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: "#BF41B7",
+                      }}
+                    >
+                      Quick order +
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
             </View>
+
+            // <View
+            //   style={{
+            //     marginTop: 10,
+            //     height: SCWIDTH * 0.26,
+            //     width: SCWIDTH * 0.9,
+            //     marginLeft: SCWIDTH * 0.05,
+            //     marginRight: SCWIDTH * 0.05,
+            //     backgroundColor: "white",
+            //     borderRadius: 10,
+            //     flexDirection: "row",
+            //   }}
+            // >
+            //   <Image
+            //     source={{ uri: item.logo }}
+            //     style={{
+            //       width: SCWIDTH * 0.2,
+            //       marginLeft: SCWIDTH * 0.03,
+            //       marginTop: SCWIDTH * 0.03,
+            //       aspectRatio: 1,
+            //       borderRadius: 5000,
+            //       borderWidth: 2,
+            //       borderColor: "white",
+            //     }}
+            //   />
+            //   <Text>{item.name}</Text>
+            // </View>
           );
         }}
       />
