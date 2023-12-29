@@ -1,6 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -61,13 +62,14 @@ const data = [
     logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
     oriprice: "15.00",
     rating: 0.9,
-    revcnt: 169,
+    revcnt: 200000000,
     desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
   },
 ];
 const SCWIDTH = Dimensions.get("window").width;
 
-export default function Home({ route }) {
+export default function Home() {
+  const navigation = useNavigation();
   return (
     <View style={{ height: "100%", width: "100%" }}>
       <View
@@ -209,6 +211,9 @@ export default function Home({ route }) {
                         color: "#BF41B7",
                         marginTop: 10,
                       }}
+                      onPress={() => {
+                        navigation.navigate("Store");
+                      }}
                     >
                       See more
                     </Text>
@@ -336,26 +341,32 @@ export default function Home({ route }) {
                 >
                   ${data[item.id].price}
                 </Text>
-                <Text
+                <View
                   style={{
+                    flexDirection: "row",
                     marginTop: "10%",
-                    color: "#BF41B7",
                     marginBottom: "1%",
-                    fontWeight: 500,
-                    fontSize: 12,
+                    width: SCWIDTH * 0.35 * 0.8,
                   }}
                 >
-                  Rating:{" "}
-                  <Text style={{ fontWeight: 900 }}>
-                    {data[item.id].rating * 5}/5
+                  <Ionicons
+                    name="star"
+                    size={15}
+                    style={{ color: "#FDCC0D" }}
+                  />
+                  <Text
+                    style={{
+                      fontWeight: 500,
+                      marginLeft: 3,
+                      color: "#BF41B7",
+                      fontSize: 12,
+                      marginTop: 0.2,
+                    }}
+                    numberOfLines={1}
+                  >
+                    {data[item.id].rating * 5} | {data[item.id].revcnt} sold
                   </Text>
-                </Text>
-                <Progress.Bar
-                  progress={data[item.id].rating}
-                  width={SCWIDTH * 0.25}
-                  color="#BF41B7"
-                  height={8}
-                />
+                </View>
               </View>
             );
           }}
@@ -450,26 +461,32 @@ export default function Home({ route }) {
                 >
                   ${data[item.id].price}
                 </Text>
-                <Text
+                <View
                   style={{
+                    flexDirection: "row",
                     marginTop: "10%",
-                    color: "#BF41B7",
                     marginBottom: "1%",
-                    fontWeight: 500,
-                    fontSize: 12,
+                    width: SCWIDTH * 0.35 * 0.8,
                   }}
                 >
-                  Rating:{" "}
-                  <Text style={{ fontWeight: 900 }}>
-                    {data[item.id].rating * 5}/5
+                  <Ionicons
+                    name="star"
+                    size={15}
+                    style={{ color: "#FDCC0D" }}
+                  />
+                  <Text
+                    style={{
+                      fontWeight: 500,
+                      marginLeft: 3,
+                      color: "#BF41B7",
+                      fontSize: 12,
+                      marginTop: 0.2,
+                    }}
+                    numberOfLines={1}
+                  >
+                    {data[item.id].rating * 5} | {data[item.id].revcnt} sold
                   </Text>
-                </Text>
-                <Progress.Bar
-                  progress={data[item.id].rating}
-                  width={SCWIDTH * 0.25}
-                  color="#BF41B7"
-                  height={8}
-                />
+                </View>
               </View>
             );
           }}
@@ -564,26 +581,32 @@ export default function Home({ route }) {
                 >
                   ${data[item.id].price}
                 </Text>
-                <Text
+                <View
                   style={{
+                    flexDirection: "row",
                     marginTop: "10%",
-                    color: "#BF41B7",
                     marginBottom: "1%",
-                    fontWeight: 500,
-                    fontSize: 12,
+                    width: SCWIDTH * 0.35 * 0.8,
                   }}
                 >
-                  Rating:{" "}
-                  <Text style={{ fontWeight: 900 }}>
-                    {data[item.id].rating * 5}/5
+                  <Ionicons
+                    name="star"
+                    size={15}
+                    style={{ color: "#FDCC0D" }}
+                  />
+                  <Text
+                    style={{
+                      fontWeight: 500,
+                      marginLeft: 3,
+                      color: "#BF41B7",
+                      fontSize: 12,
+                      marginTop: 0.2,
+                    }}
+                    numberOfLines={1}
+                  >
+                    {data[item.id].rating * 5} | {data[item.id].revcnt} sold
                   </Text>
-                </Text>
-                <Progress.Bar
-                  progress={data[item.id].rating}
-                  width={SCWIDTH * 0.25}
-                  color="#BF41B7"
-                  height={8}
-                />
+                </View>
               </View>
             );
           }}

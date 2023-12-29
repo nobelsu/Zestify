@@ -28,7 +28,7 @@ export default function Splash() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("logged in");
-        navigation.navigate("Home");
+        navigation.navigate("TabNav");
       } else {
         console.log("not logged in");
         navigation.navigate("Login");

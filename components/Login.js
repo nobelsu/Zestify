@@ -235,7 +235,7 @@ export default function Login() {
           setPassValid(1);
           try {
             await signInWithEmailAndPassword(auth, email, password);
-            navigation.navigate("Home");
+            navigation.navigate("TabNav");
           } catch (error) {
             setCodee(codes[error.code].msg);
             if (codes[error.code].id > 1) setPassValid(0);

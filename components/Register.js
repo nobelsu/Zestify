@@ -194,6 +194,7 @@ export default function Register() {
             />
           </View>
         </View>
+
         <View>
           {!passValid ? (
             <View
@@ -245,7 +246,7 @@ export default function Register() {
           try {
             await createUserWithEmailAndPassword(auth, email, password);
             await signInWithEmailAndPassword(auth, email, password);
-            navigation.navigate("Home");
+            navigation.navigate("TabNav");
           } catch (error) {
             setCodee(codes[error.code].msg);
             if (codes[error.code].id > 3) setPassValid(0);

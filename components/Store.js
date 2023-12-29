@@ -18,6 +18,7 @@ import * as Progress from "react-native-progress";
 import Badge from "./Badge";
 
 export default function Store() {
+  const navigation = useNavigation();
   const [hearted, setHearted] = useState(false); // adjust based on data stored
 
   return (
@@ -45,15 +46,21 @@ export default function Store() {
                 }}
               >
                 <View style={{ flex: 1 }}>
-                  <Ionicons
-                    name="arrow-back-outline"
-                    color="white"
-                    size={36}
-                    style={{
-                      marginTop: "30%",
-                      marginLeft: "10%",
+                  <Pressable
+                    onPress={() => {
+                      navigation.goBack();
                     }}
-                  />
+                  >
+                    <Ionicons
+                      name="arrow-back-outline"
+                      color="white"
+                      size={36}
+                      style={{
+                        marginTop: "30%",
+                        marginLeft: "10%",
+                      }}
+                    />
+                  </Pressable>
                 </View>
 
                 <View
@@ -61,20 +68,23 @@ export default function Store() {
                     flex: 1,
                   }}
                 >
-                  <Ionicons
-                    name={hearted ? "heart" : "heart-outline"}
-                    color={hearted ? "#BF41B7" : "white"}
-                    size={36}
-                    style={{
-                      marginLeft: "70%",
-                      marginTop: "30%",
-                      width: 48,
-                      height: 48,
-                    }}
+                  <Pressable
                     onPress={() => {
                       setHearted(!hearted);
                     }}
-                  />
+                  >
+                    <Ionicons
+                      name={hearted ? "heart" : "heart-outline"}
+                      color={hearted ? "#BF41B7" : "white"}
+                      size={36}
+                      style={{
+                        marginLeft: "70%",
+                        marginTop: "30%",
+                        width: 48,
+                        height: 48,
+                      }}
+                    />
+                  </Pressable>
                 </View>
               </View>
               <View style={{ flexDirection: "row", width: "100%", flex: 0.8 }}>
