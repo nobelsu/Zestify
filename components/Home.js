@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   KeyboardAvoidingView,
@@ -19,6 +19,18 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
+import { db } from "../firebase";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
+import { NetworkContext } from "../exports";
 
 const data = [
   {
@@ -70,6 +82,22 @@ const SCWIDTH = Dimensions.get("window").width;
 
 export default function Home() {
   const navigation = useNavigation();
+  const value = useContext(NetworkContext);
+  const [dataNew, setDataNew] = useState([]);
+  const user = value.params.user;
+  useEffect(() => {
+    async function Temp() {
+      const ref = collection(db, "stores");
+      const qnew = query(ref, where("new", "==", true));
+      onSnapshot(qnew, (querySnapshot) => {
+        const dat = querySnapshot.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        });
+        setDataNew(dat);
+      });
+    }
+    Temp();
+  }, []);
   return (
     <View style={{ height: "100%", width: "100%" }}>
       <View
@@ -139,7 +167,7 @@ export default function Home() {
           snapToAlignment="center"
           snapToInterval={SCWIDTH}
           decelerationRate={"fast"}
-          data={data}
+          data={dataNew}
           keyExtractor={(item) => item.id}
           style={{ marginTop: "3%" }}
           renderItem={({ item }) => {
@@ -156,7 +184,7 @@ export default function Home() {
                 }}
               >
                 <ImageBackground
-                  source={{ uri: item.url }}
+                  source={{ uri: item.banner }}
                   style={{
                     width: SCWIDTH * 0.9,
                     aspectRatio: 5,
@@ -190,7 +218,7 @@ export default function Home() {
                       }}
                       numberOfLines={1}
                     >
-                      {data[item.id].name}
+                      {item.name}
                     </Text>
                     <Text
                       style={{
@@ -201,7 +229,7 @@ export default function Home() {
                       }}
                       numberOfLines={3}
                     >
-                      {data[item.id].desc}
+                      {item.desc}
                     </Text>
                     <Pressable
                       onPress={() => {
@@ -236,7 +264,7 @@ export default function Home() {
                         marginTop: 28,
                       }}
                     >
-                      ${data[item.id].oriprice}
+                      ${item.oriprice}
                     </Text>
                     <Text
                       style={{
@@ -246,7 +274,7 @@ export default function Home() {
                         marginLeft: 30,
                       }}
                     >
-                      ${data[item.id].price}
+                      ${item.price}
                     </Text>
                   </View>
                 </View>

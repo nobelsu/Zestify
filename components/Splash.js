@@ -27,10 +27,11 @@ export default function Splash() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("logged in");
-        navigation.navigate("TabNav");
+        navigation.navigate("TabNav", {
+          screen: "Home",
+          user: user.uid,
+        });
       } else {
-        console.log("not logged in");
         navigation.navigate("Login");
       }
     });

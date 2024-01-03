@@ -12,23 +12,28 @@ import Splash from "./components/Splash";
 import Favourites from "./components/Favourite";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+import { NetworkContext } from "./exports";
 
 export default function App() {
   return (
-    // <Favourite />
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        initialRouteName="Splash"
+      >
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen
           name="TabNav"
-          component={function Main() {
+          component={function Main({ route }) {
             return (
-              <Tab.Navigator screenOptions={{ headerShown: false }}>
-                <Tab.Screen name="Home" component={Home} />
-                <Tab.Screen name="Favourites" component={Favourites} />
-              </Tab.Navigator>
+              <NetworkContext.Provider value={route}>
+                <Tab.Navigator screenOptions={{ headerShown: false }}>
+                  <Tab.Screen name="Home" component={Home} />
+                  <Tab.Screen name="Favourites" component={Favourites} />
+                </Tab.Navigator>
+              </NetworkContext.Provider>
             );
           }}
         />

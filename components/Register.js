@@ -20,10 +20,12 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import { db } from "../firebase";
 const SCWIDTH = Dimensions.get("window").width;
 
 const codes = {
@@ -243,15 +245,29 @@ export default function Register() {
         onPress={async () => {
           setEmailValid(1);
           setPassValid(1);
-          try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            await signInWithEmailAndPassword(auth, email, password);
-            navigation.navigate("TabNav");
-          } catch (error) {
-            setCodee(codes[error.code].msg);
-            if (codes[error.code].id > 3) setPassValid(0);
-            else setEmailValid(0);
-          }
+          createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              signInWithEmailAndPassword(auth, email, password).then(
+                (userCredential) => {
+                  const user = userCredential.user;
+
+                  setDoc(doc(db, "users", user.uid), {
+                    fav: [],
+                    name: "Temp",
+                  });
+
+                  navigation.navigate("TabNav", {
+                    screen: "Home",
+                    user: user.uid,
+                  });
+                }
+              );
+            })
+            .catch((error) => {
+              setCodee(codes[error.code].msg);
+              if (codes[error.code].id > 3) setPassValid(0);
+              else setEmailValid(0);
+            });
         }}
       >
         <Text style={{ color: "#BF41B7", fontSize: 16, fontWeight: 500 }}>

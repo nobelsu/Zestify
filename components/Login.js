@@ -233,14 +233,19 @@ export default function Login() {
         onPress={async () => {
           setEmailValid(1);
           setPassValid(1);
-          try {
-            await signInWithEmailAndPassword(auth, email, password);
-            navigation.navigate("TabNav");
-          } catch (error) {
-            setCodee(codes[error.code].msg);
-            if (codes[error.code].id > 1) setPassValid(0);
-            else setEmailValid(0);
-          }
+          signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              const user = userCredential.user;
+              navigation.navigate("TabNav", {
+                screen: "Home",
+                user: user.uid,
+              });
+            })
+            .catch((error) => {
+              setCodee(codes[error.code].msg);
+              if (codes[error.code].id > 1) setPassValid(0);
+              else setEmailValid(0);
+            });
         }}
       >
         <Text style={{ color: "#BF41B7", fontSize: 16, fontWeight: 500 }}>

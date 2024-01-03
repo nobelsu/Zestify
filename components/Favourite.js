@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -18,58 +18,40 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
+import { db } from "../firebase";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { NetworkContext } from "../exports";
 
 const SCWIDTH = Dimensions.get("window").width;
 
-const data = [
-  {
-    id: 0,
-    url: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
-    name: "Tous Les Jours",
-    price: "5.00",
-    logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
-    oriprice: "15.00",
-    rating: 0.9,
-    revcnt: 169,
-    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
-  },
-  {
-    id: 1,
-    url: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
-    name: "Tous Les Jours Second Shop",
-    price: "5.00",
-    logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
-    oriprice: "15.00",
-    rating: 0.9,
-    revcnt: 169,
-    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
-  },
-  {
-    id: 2,
-    url: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
-    name: "Tous Les Jours Second Shop",
-    price: "5.00",
-    logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
-    oriprice: "15.00",
-    rating: 0.9,
-    revcnt: 169,
-    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
-  },
-  {
-    id: 3,
-    url: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
-    name: "Tous Les Jours Second Shop",
-    price: "5.00",
-    logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
-    oriprice: "15.00",
-    rating: 0.9,
-    revcnt: 200000000,
-    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
-  },
-];
-
 export default function Favourites() {
-  const [hearted, setHearted] = useState(true);
+  const [data, setData] = useState([]);
+  const [changed, setChanged] = useState(0);
+  const value = useContext(NetworkContext);
+  const user = value.params.user;
+  useEffect(() => {
+    setData([]);
+    async function Temp() {
+      const docRef = doc(db, "users", user);
+      const docSnap = await getDoc(docRef);
+      for (let i = 0; i < docSnap.data()["fav"].length; i++) {
+        const docRef2 = doc(db, "stores", docSnap.data()["fav"][i]);
+        const docSnap2 = await getDoc(docRef2);
+        setData([
+          ...data,
+          { ...docSnap2.data(), id: docSnap.data()["fav"][i] },
+        ]);
+      }
+    }
+    Temp();
+  }, [changed]);
   return (
     <View style={{ height: "100%", width: "100%" }}>
       <View
@@ -159,7 +141,6 @@ export default function Favourites() {
                 style={{
                   marginLeft: SCWIDTH * 0.09,
                   width: SCWIDTH * 0.5,
-
                   justifyContent: "center",
                 }}
               >
@@ -171,15 +152,16 @@ export default function Favourites() {
                 </Text>
                 <View style={{ flexDirection: "row", marginTop: 8 }}>
                   <Pressable
-                    onPress={() => {
-                      setHearted(!hearted);
+                    onPress={async () => {
+                      const ref = doc(db, "users", user);
+                      const snap = await getDoc(ref);
+                      const ori = snap.data()["fav"];
+                      ori.splice(ori.indexOf(item.id), 1);
+                      await updateDoc(ref, { fav: ori });
+                      setChanged(!changed);
                     }}
                   >
-                    <Ionicons
-                      name={hearted ? "heart" : "heart-outline"}
-                      color={hearted ? "#BF41B7" : "white"}
-                      size={28}
-                    />
+                    <Ionicons name="heart" color="#BF41B7" size={28} />
                   </Pressable>
                   <Pressable
                     style={{
