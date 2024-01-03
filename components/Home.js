@@ -84,16 +84,24 @@ export default function Home() {
   const navigation = useNavigation();
   const value = useContext(NetworkContext);
   const [dataNew, setDataNew] = useState([]);
+  const [dataPromo, setDataPromo] = useState([]);
   const user = value.params.user;
   useEffect(() => {
     async function Temp() {
       const ref = collection(db, "stores");
       const qnew = query(ref, where("new", "==", true));
+      const qpromo = query(ref, where("promo", "==", true));
       onSnapshot(qnew, (querySnapshot) => {
         const dat = querySnapshot.docs.map((doc) => {
           return { ...doc.data(), id: doc.id };
         });
         setDataNew(dat);
+      });
+      onSnapshot(qpromo, (querySnapshot) => {
+        const dat = querySnapshot.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        });
+        setDataPromo(dat);
       });
     }
     Temp();
@@ -282,7 +290,7 @@ export default function Home() {
             );
           }}
         />
-        <Text
+        {/* <Text
           style={{
             marginTop: "6%",
             fontSize: 20,
@@ -403,7 +411,7 @@ export default function Home() {
               </View>
             );
           }}
-        />
+        /> */}
         <Text
           style={{
             marginTop: "6%",
@@ -427,7 +435,7 @@ export default function Home() {
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={false}
-          data={data}
+          data={dataPromo}
           keyExtractor={(item) => item.id}
           style={{ marginLeft: "5%", marginTop: "3%" }}
           renderItem={({ item }) => {
@@ -443,7 +451,7 @@ export default function Home() {
                 }}
               >
                 <ImageBackground
-                  source={{ uri: item.url }}
+                  source={{ uri: item.banner }}
                   style={{
                     width: SCWIDTH * 0.35,
                     aspectRatio: 1.5,
@@ -476,7 +484,7 @@ export default function Home() {
                   }}
                   numberOfLines={1}
                 >
-                  {data[item.id].name}
+                  {item.name}
                 </Text>
                 <Text
                   style={{
@@ -487,12 +495,12 @@ export default function Home() {
                     color: "grey",
                   }}
                 >
-                  ${data[item.id].oriprice}
+                  ${item.oriprice}
                 </Text>
                 <Text
                   style={{ fontSize: 18, fontWeight: 700, marginTop: "1%" }}
                 >
-                  ${data[item.id].price}
+                  ${item.price}
                 </Text>
                 <View
                   style={{
@@ -516,10 +524,8 @@ export default function Home() {
                     }}
                     numberOfLines={1}
                   >
-                    {data[item.id].rating * 5} |{" "}
-                    <Text style={{ fontWeight: 700 }}>
-                      {data[item.id].revcnt} sold
-                    </Text>
+                    {item.rating * 5} |{" "}
+                    <Text style={{ fontWeight: 700 }}>{item.revcnt} sold</Text>
                   </Text>
                 </View>
               </View>
@@ -652,4 +658,3 @@ export default function Home() {
     </View>
   );
 }
-4;
