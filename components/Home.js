@@ -91,6 +91,7 @@ export default function Home() {
   const [dataSearch, setDataSearch] = useState([]);
 
   const user = value.params.user;
+
   useEffect(() => {
     async function Temp() {
       const ref = collection(db, "stores");
@@ -114,7 +115,6 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    console.log("here");
     const ref = collection(db, "stores");
     async function Temp() {
       const qsearch = query(ref, where("name", "!=", ""));
@@ -124,13 +124,309 @@ export default function Home() {
         });
         setDataSearch(
           dat.filter((d) => {
-            return d.name.toString().includes(searchVal);
+            return d.name
+              .toString()
+              .toLowerCase()
+              .includes(searchVal.toLowerCase());
           })
         );
       });
     }
     Temp();
   }, [searchVal]);
+
+  function renderCard({ item }) {
+    return (
+      <View
+        style={{
+          height: 200,
+          width: SCWIDTH * 0.9,
+          marginLeft: SCWIDTH * 0.05,
+          marginRight: SCWIDTH * 0.05,
+          backgroundColor: "white",
+          borderRadius: 10,
+          alignItems: "center",
+        }}
+      >
+        <Pressable
+          onPress={() => {
+            navigation.navigate("Store", { user: user, store: item.id });
+          }}
+        >
+          <ImageBackground
+            source={{ uri: item.banner }}
+            style={{
+              width: SCWIDTH * 0.9,
+              aspectRatio: 5,
+            }}
+            imageStyle={{
+              borderTopRightRadius: 10,
+              borderTopLeftRadius: 10,
+            }}
+          >
+            <Image
+              source={{ uri: item.logo }}
+              style={{
+                width: SCWIDTH * 0.2,
+                marginLeft: SCWIDTH * 0.03,
+                marginTop: SCWIDTH * 0.03,
+                aspectRatio: 1,
+                borderRadius: 5000,
+                borderWidth: 2,
+                borderColor: "white",
+              }}
+            />
+          </ImageBackground>
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ flex: 2 }}>
+              <Text
+                style={{
+                  marginTop: SCWIDTH * 0.07,
+                  marginLeft: SCWIDTH * 0.03,
+                  fontWeight: 400,
+                  fontSize: 14,
+                }}
+                numberOfLines={1}
+              >
+                {item.name}
+              </Text>
+              <Text
+                style={{
+                  marginLeft: SCWIDTH * 0.03,
+                  fontWeight: 200,
+                  fontSize: 12,
+                  textAlign: "justify",
+                }}
+                numberOfLines={3}
+              >
+                {item.desc}
+              </Text>
+            </View>
+            <View
+              style={{
+                flex: 1,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 13,
+                  textDecorationLine: "line-through",
+                  textDecorationStyle: "solid",
+                  color: "grey",
+                  marginLeft: 20,
+                  marginTop: 28,
+                }}
+              >
+                ${item.oriprice}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  marginTop: "1%",
+                  marginLeft: 20,
+                }}
+              >
+                ${item.price}
+              </Text>
+            </View>
+          </View>
+        </Pressable>
+      </View>
+    );
+  }
+
+  function renderSmall({ item }) {
+    return (
+      <View
+        style={{
+          height: 250,
+          width: SCWIDTH * 0.35,
+          marginRight: SCWIDTH * 0.02,
+          backgroundColor: "white",
+          borderRadius: 10,
+        }}
+      >
+        <Pressable
+          onPress={() => {
+            navigation.navigate("Store", { user: user, store: item.id });
+          }}
+          style={{ alignItems: "center" }}
+        >
+          <ImageBackground
+            source={{ uri: item.banner }}
+            style={{
+              width: SCWIDTH * 0.35,
+              aspectRatio: 1.5,
+            }}
+            imageStyle={{
+              borderTopRightRadius: 10,
+              borderTopLeftRadius: 10,
+            }}
+          >
+            <Image
+              source={{ uri: item.logo }}
+              style={{
+                width: SCWIDTH * 0.2,
+                marginLeft: SCWIDTH * 0.075,
+                marginTop: SCWIDTH * 0.125,
+                aspectRatio: 1,
+                borderRadius: 5000,
+                borderWidth: 2,
+                borderColor: "white",
+              }}
+            />
+          </ImageBackground>
+          <Text
+            style={{
+              marginTop: SCWIDTH * 0.1,
+              width: "80%",
+              textAlign: "center",
+              fontWeight: 400,
+              fontSize: 14,
+            }}
+            numberOfLines={1}
+          >
+            {item.name}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              marginTop: "4%",
+              textDecorationLine: "line-through",
+              textDecorationStyle: "solid",
+              color: "grey",
+            }}
+          >
+            ${item.oriprice}
+          </Text>
+          <Text style={{ fontSize: 18, fontWeight: 700, marginTop: "1%" }}>
+            ${item.price}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: "10%",
+              marginBottom: "1%",
+              width: SCWIDTH * 0.35 * 0.8,
+              justifyContent: "center",
+            }}
+          >
+            <Ionicons name="star" size={15} style={{ color: "#FDCC0D" }} />
+            <Text
+              style={{
+                marginLeft: 3,
+                color: "#BF41B7",
+                fontSize: 12,
+                marginTop: 0.2,
+              }}
+              numberOfLines={1}
+            >
+              {item.rating * 5} |{" "}
+              <Text style={{ fontWeight: 700 }}>{item.revcnt} sold</Text>
+            </Text>
+          </View>
+        </Pressable>
+      </View>
+    );
+  }
+
+  function render2List({ item }) {
+    return (
+      <View
+        style={{
+          height: 270,
+          width: SCWIDTH * 0.425,
+          marginTop: 10,
+          backgroundColor: "white",
+          borderRadius: 10,
+
+          marginLeft: SCWIDTH * 0.05,
+        }}
+      >
+        <Pressable
+          onPress={() => {
+            navigation.navigate("Store", { user: user, store: item.id });
+          }}
+          style={{ alignItems: "center" }}
+        >
+          <ImageBackground
+            source={{ uri: item.banner }}
+            style={{
+              width: SCWIDTH * 0.425,
+              aspectRatio: 1.6,
+            }}
+            imageStyle={{
+              borderTopRightRadius: 10,
+              borderTopLeftRadius: 10,
+            }}
+          >
+            <Image
+              source={{ uri: item.logo }}
+              style={{
+                width: SCWIDTH * 0.2,
+                marginLeft: SCWIDTH * 0.1125,
+                marginTop: SCWIDTH * 0.125,
+                aspectRatio: 1,
+                borderRadius: 5000,
+                borderWidth: 2,
+                borderColor: "white",
+              }}
+            />
+          </ImageBackground>
+          <Text
+            style={{
+              marginTop: SCWIDTH * 0.1,
+              width: "80%",
+              textAlign: "center",
+              fontWeight: 400,
+              fontSize: 14,
+            }}
+            numberOfLines={1}
+          >
+            {item.name}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              marginTop: "4%",
+              textDecorationLine: "line-through",
+              textDecorationStyle: "solid",
+              color: "grey",
+            }}
+          >
+            ${item.oriprice}
+          </Text>
+          <Text style={{ fontSize: 18, fontWeight: 700, marginTop: "1%" }}>
+            ${item.price}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: "10%",
+              marginBottom: "1%",
+              width: SCWIDTH * 0.35 * 0.8,
+              justifyContent: "center",
+            }}
+          >
+            <Ionicons name="star" size={15} style={{ color: "#FDCC0D" }} />
+            <Text
+              style={{
+                marginLeft: 3,
+                color: "#BF41B7",
+                fontSize: 12,
+                marginTop: 0.2,
+              }}
+              numberOfLines={1}
+            >
+              {item.rating * 5} |{" "}
+              <Text style={{ fontWeight: 700 }}>{item.revcnt} sold</Text>
+            </Text>
+          </View>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <View style={{ height: "100%", width: "100%" }}>
@@ -226,117 +522,7 @@ export default function Home() {
             data={dataNew}
             keyExtractor={(item) => item.id}
             style={{ marginTop: "3%" }}
-            renderItem={({ item }) => {
-              return (
-                <View
-                  style={{
-                    height: 200,
-                    width: SCWIDTH * 0.9,
-                    marginLeft: SCWIDTH * 0.05,
-                    marginRight: SCWIDTH * 0.05,
-                    backgroundColor: "white",
-                    borderRadius: 10,
-                    alignItems: "center",
-                  }}
-                >
-                  <ImageBackground
-                    source={{ uri: item.banner }}
-                    style={{
-                      width: SCWIDTH * 0.9,
-                      aspectRatio: 5,
-                    }}
-                    imageStyle={{
-                      borderTopRightRadius: 10,
-                      borderTopLeftRadius: 10,
-                    }}
-                  >
-                    <Image
-                      source={{ uri: item.logo }}
-                      style={{
-                        width: SCWIDTH * 0.2,
-                        marginLeft: SCWIDTH * 0.03,
-                        marginTop: SCWIDTH * 0.03,
-                        aspectRatio: 1,
-                        borderRadius: 5000,
-                        borderWidth: 2,
-                        borderColor: "white",
-                      }}
-                    />
-                  </ImageBackground>
-                  <View style={{ flexDirection: "row" }}>
-                    <View style={{ flex: 2 }}>
-                      <Text
-                        style={{
-                          marginTop: SCWIDTH * 0.07,
-                          marginLeft: SCWIDTH * 0.03,
-                          fontWeight: 400,
-                          fontSize: 14,
-                        }}
-                        numberOfLines={1}
-                      >
-                        {item.name}
-                      </Text>
-                      <Text
-                        style={{
-                          marginLeft: SCWIDTH * 0.03,
-                          fontWeight: 200,
-                          fontSize: 12,
-                          textAlign: "justify",
-                        }}
-                        numberOfLines={3}
-                      >
-                        {item.desc}
-                      </Text>
-                      <Pressable
-                        onPress={() => {
-                          navigation.navigate("Store");
-                        }}
-                      >
-                        <Text
-                          style={{
-                            marginLeft: SCWIDTH * 0.03,
-                            fontWeight: 900,
-                            fontSize: 12,
-                            color: "#BF41B7",
-                            marginTop: 10,
-                          }}
-                        >
-                          See more
-                        </Text>
-                      </Pressable>
-                    </View>
-                    <View
-                      style={{
-                        flex: 1,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 13,
-                          textDecorationLine: "line-through",
-                          textDecorationStyle: "solid",
-                          color: "grey",
-                          marginLeft: 20,
-                          marginTop: 28,
-                        }}
-                      >
-                        ${item.oriprice}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          fontWeight: 700,
-                          marginTop: "1%",
-                          marginLeft: 20,
-                        }}
-                      >
-                        ${item.price}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              );
-            }}
+            renderItem={renderCard}
           />
           {/* <Text
           style={{
@@ -486,102 +672,7 @@ export default function Home() {
             data={dataPromo}
             keyExtractor={(item) => item.id}
             style={{ marginLeft: "5%", marginTop: "3%" }}
-            renderItem={({ item }) => {
-              return (
-                <View
-                  style={{
-                    height: 250,
-                    width: SCWIDTH * 0.35,
-                    marginRight: SCWIDTH * 0.02,
-                    backgroundColor: "white",
-                    borderRadius: 10,
-                    alignItems: "center",
-                  }}
-                >
-                  <ImageBackground
-                    source={{ uri: item.banner }}
-                    style={{
-                      width: SCWIDTH * 0.35,
-                      aspectRatio: 1.5,
-                    }}
-                    imageStyle={{
-                      borderTopRightRadius: 10,
-                      borderTopLeftRadius: 10,
-                    }}
-                  >
-                    <Image
-                      source={{ uri: item.logo }}
-                      style={{
-                        width: SCWIDTH * 0.2,
-                        marginLeft: SCWIDTH * 0.075,
-                        marginTop: SCWIDTH * 0.125,
-                        aspectRatio: 1,
-                        borderRadius: 5000,
-                        borderWidth: 2,
-                        borderColor: "white",
-                      }}
-                    />
-                  </ImageBackground>
-                  <Text
-                    style={{
-                      marginTop: SCWIDTH * 0.1,
-                      width: "80%",
-                      textAlign: "center",
-                      fontWeight: 400,
-                      fontSize: 14,
-                    }}
-                    numberOfLines={1}
-                  >
-                    {item.name}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      marginTop: "4%",
-                      textDecorationLine: "line-through",
-                      textDecorationStyle: "solid",
-                      color: "grey",
-                    }}
-                  >
-                    ${item.oriprice}
-                  </Text>
-                  <Text
-                    style={{ fontSize: 18, fontWeight: 700, marginTop: "1%" }}
-                  >
-                    ${item.price}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      marginTop: "10%",
-                      marginBottom: "1%",
-                      width: SCWIDTH * 0.35 * 0.8,
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Ionicons
-                      name="star"
-                      size={15}
-                      style={{ color: "#FDCC0D" }}
-                    />
-                    <Text
-                      style={{
-                        marginLeft: 3,
-                        color: "#BF41B7",
-                        fontSize: 12,
-                        marginTop: 0.2,
-                      }}
-                      numberOfLines={1}
-                    >
-                      {item.rating * 5} |{" "}
-                      <Text style={{ fontWeight: 700 }}>
-                        {item.revcnt} sold
-                      </Text>
-                    </Text>
-                  </View>
-                </View>
-              );
-            }}
+            renderItem={renderSmall}
           />
           <Text
             style={{
@@ -609,206 +700,32 @@ export default function Home() {
             data={data}
             keyExtractor={(item) => item.id}
             style={{ marginLeft: "5%", marginTop: "3%" }}
-            renderItem={({ item }) => {
-              return (
-                <View
-                  style={{
-                    height: 250,
-                    width: SCWIDTH * 0.35,
-                    marginRight: SCWIDTH * 0.02,
-                    backgroundColor: "white",
-                    borderRadius: 10,
-                    alignItems: "center",
-                  }}
-                >
-                  <ImageBackground
-                    source={{ uri: item.url }}
-                    style={{
-                      width: SCWIDTH * 0.35,
-                      aspectRatio: 1.5,
-                    }}
-                    imageStyle={{
-                      borderTopRightRadius: 10,
-                      borderTopLeftRadius: 10,
-                    }}
-                  >
-                    <Image
-                      source={{ uri: item.logo }}
-                      style={{
-                        width: SCWIDTH * 0.2,
-                        marginLeft: SCWIDTH * 0.075,
-                        marginTop: SCWIDTH * 0.125,
-                        aspectRatio: 1,
-                        borderRadius: 5000,
-                        borderWidth: 2,
-                        borderColor: "white",
-                      }}
-                    />
-                  </ImageBackground>
-                  <Text
-                    style={{
-                      marginTop: SCWIDTH * 0.1,
-                      width: "80%",
-                      textAlign: "center",
-                      fontWeight: 400,
-                      fontSize: 14,
-                    }}
-                    numberOfLines={1}
-                  >
-                    {data[item.id].name}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      marginTop: "4%",
-                      textDecorationLine: "line-through",
-                      textDecorationStyle: "solid",
-                      color: "grey",
-                    }}
-                  >
-                    ${data[item.id].oriprice}
-                  </Text>
-                  <Text
-                    style={{ fontSize: 18, fontWeight: 700, marginTop: "1%" }}
-                  >
-                    ${data[item.id].price}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      marginTop: "10%",
-                      marginBottom: "1%",
-                      width: SCWIDTH * 0.35 * 0.8,
-                    }}
-                  >
-                    <Ionicons
-                      name="star"
-                      size={15}
-                      style={{ color: "#FDCC0D" }}
-                    />
-                    <Text
-                      style={{
-                        marginLeft: 3,
-                        color: "#BF41B7",
-                        fontSize: 12,
-                        marginTop: 0.2,
-                      }}
-                      numberOfLines={1}
-                    >
-                      {data[item.id].rating * 5} |{" "}
-                      <Text style={{ fontWeight: 700 }}>
-                        {data[item.id].revcnt} sold
-                      </Text>
-                    </Text>
-                  </View>
-                </View>
-              );
-            }}
+            renderItem={renderSmall}
           />
         </ScrollView>
       ) : (
-        <FlatList
-          style={{ width: "100%" }}
-          numColumns={2}
-          data={dataSearch}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => {
-            return (
-              <View
-                style={{
-                  height: 270,
-                  width: SCWIDTH * 0.425,
-
-                  marginTop: 10,
-                  backgroundColor: "white",
-                  borderRadius: 10,
-                  alignItems: "center",
-                  marginLeft: SCWIDTH * 0.05,
-                }}
-              >
-                <ImageBackground
-                  source={{ uri: item.banner }}
-                  style={{
-                    width: SCWIDTH * 0.425,
-                    aspectRatio: 1.6,
-                  }}
-                  imageStyle={{
-                    borderTopRightRadius: 10,
-                    borderTopLeftRadius: 10,
-                  }}
-                >
-                  <Image
-                    source={{ uri: item.logo }}
-                    style={{
-                      width: SCWIDTH * 0.2,
-                      marginLeft: SCWIDTH * 0.1125,
-                      marginTop: SCWIDTH * 0.125,
-                      aspectRatio: 1,
-                      borderRadius: 5000,
-                      borderWidth: 2,
-                      borderColor: "white",
-                    }}
-                  />
-                </ImageBackground>
-                <Text
-                  style={{
-                    marginTop: SCWIDTH * 0.1,
-                    width: "80%",
-                    textAlign: "center",
-                    fontWeight: 400,
-                    fontSize: 14,
-                  }}
-                  numberOfLines={1}
-                >
-                  {item.name}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginTop: "4%",
-                    textDecorationLine: "line-through",
-                    textDecorationStyle: "solid",
-                    color: "grey",
-                  }}
-                >
-                  ${item.oriprice}
-                </Text>
-                <Text
-                  style={{ fontSize: 18, fontWeight: 700, marginTop: "1%" }}
-                >
-                  ${item.price}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginTop: "10%",
-                    marginBottom: "1%",
-                    width: SCWIDTH * 0.35 * 0.8,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Ionicons
-                    name="star"
-                    size={15}
-                    style={{ color: "#FDCC0D" }}
-                  />
-                  <Text
-                    style={{
-                      marginLeft: 3,
-                      color: "#BF41B7",
-                      fontSize: 12,
-                      marginTop: 0.2,
-                    }}
-                    numberOfLines={1}
-                  >
-                    {item.rating * 5} |{" "}
-                    <Text style={{ fontWeight: 700 }}>{item.revcnt} sold</Text>
-                  </Text>
-                </View>
-              </View>
-            );
-          }}
-        />
+        <View style={{ width: "100%" }}>
+          <Text
+            style={{
+              marginLeft: "5%",
+              marginTop: "5%",
+              fontSize: 20,
+              fontWeight: 900,
+              numberOfLines: 1,
+              width: "90%",
+              marginBottom: "2%",
+            }}
+          >
+            {searchVal == "" ? "All stores" : `Results for "${searchVal}"`}
+          </Text>
+          <FlatList
+            style={{ width: "100%" }}
+            numColumns={2}
+            data={dataSearch}
+            keyExtractor={(item) => item.id}
+            renderItem={render2List}
+          />
+        </View>
       )}
     </View>
   );

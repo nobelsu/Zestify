@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -16,20 +16,39 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import Badge from "./Badge";
+import { db } from "../firebase";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
 
-export default function Store() {
+export default function Store({ route }) {
   const navigation = useNavigation();
   const [hearted, setHearted] = useState(false); // adjust based on data stored
   const [numLines, setnumLines] = useState(3);
   const [textSee, settextSee] = useState("See more");
-
+  const [data, setData] = useState({});
+  useEffect(() => {
+    async function Temp() {
+      const docRef = doc(db, "stores", route.params.store);
+      const docSnap = await getDoc(docRef);
+      setData({ ...docSnap.data(), id: route.params.store });
+    }
+    Temp();
+  }, []);
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
       <ScrollView style={{ flex: 3.5 }}>
         <View style={{ height: "25%" }}>
           <ImageBackground
             source={{
-              uri: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
+              uri: data.banner,
             }}
             style={{ height: "100%", width: "100%" }}
           >
@@ -93,15 +112,16 @@ export default function Store() {
                 <View style={{ flex: 1, justifyContent: "center" }}>
                   <Image
                     source={{
-                      uri: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
+                      uri: data.logo,
                     }}
                     style={{
-                      width: "24%",
+                      width: "26%",
                       aspectRatio: 1,
                       borderRadius: 5000,
                       marginLeft: "5%",
                       borderWidth: 2,
                       borderColor: "#BF41B7",
+                      marginTop: "12%",
                     }}
                   />
                 </View>
@@ -109,8 +129,8 @@ export default function Store() {
             </View>
           </ImageBackground>
         </View>
-        <View style={{ backgroundColor: "white" }}>
-          <View style={{ flexDirection: "row", marginTop: 10 }}>
+        <View>
+          <View style={{ flexDirection: "row", marginTop: "4.5%" }}>
             <View style={{ flex: 2.5 }}>
               <Text
                 style={{
@@ -122,7 +142,7 @@ export default function Store() {
                   flex: 2,
                 }}
               >
-                TOUS les JOURS
+                {data.name}
               </Text>
               <View
                 style={{
@@ -146,7 +166,7 @@ export default function Store() {
                     width: "90%",
                   }}
                 >
-                  Today 15:00-17:00
+                  From {data.collectionStart} until {data.collectionEnd}
                 </Text>
               </View>
               <View
@@ -173,7 +193,7 @@ export default function Store() {
                     paddingBottom: 4,
                   }}
                 >
-                  53 South Carriage Dr. Tuscaloosa, AL 35405
+                  {data.loc}
                 </Text>
               </View>
             </View>
@@ -192,9 +212,11 @@ export default function Store() {
                   color: "grey",
                 }}
               >
-                $15.00
+                ${data.oriprice}
               </Text>
-              <Text style={{ fontSize: 28, fontWeight: 700 }}>$4.99</Text>
+              <Text style={{ fontSize: 24, fontWeight: 700 }}>
+                ${data.price}
+              </Text>
               <View
                 style={{
                   width: "80%",
@@ -213,7 +235,7 @@ export default function Store() {
                     color: "white",
                   }}
                 >
-                  3 left
+                  {data.stock} left
                 </Text>
               </View>
               <View
@@ -237,54 +259,10 @@ export default function Store() {
                     marginLeft: 5,
                   }}
                 >
-                  4.5
+                  {data.rating * 5}
                 </Text>
               </View>
             </View>
-          </View>
-
-          <View style={{ flexDirection: "row" }}>
-            {/* <View
-              style={{
-                width: "20%",
-                backgroundColor: "#30D9BA",
-                padding: "1%",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 5,
-                marginLeft: "5%",
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 14,
-                }}
-              >
-                3 left
-              </Text>
-            </View> */}
-            {/* <View
-              style={{
-                width: "20%",
-                backgroundColor: "#177359",
-                padding: "1%",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 5,
-
-                marginLeft: "2%",
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 14,
-                }}
-              >
-                $4.99
-              </Text>
-            </View> */}
           </View>
 
           <View
@@ -314,11 +292,7 @@ export default function Store() {
                 }}
                 numberOfLines={numLines}
               >
-                With a commitment to using only the finest ingredients, our
-                products are known for their unique flavors and wholesome
-                qualities. Our skilled bakers create a wide array of delicious
-                treats that are freshly baked and ready to be enjoyed by our
-                customers seeking exceptional taste and quality.
+                {data.desc}
               </Text>
             </View>
             <View style={{ marginTop: 3 }}>
@@ -367,7 +341,6 @@ export default function Store() {
                 paddingTop: 4,
                 paddingBottom: 4,
                 marginTop: 8,
-                marginBottom: "10%",
                 width: "100%",
               }}
             >
