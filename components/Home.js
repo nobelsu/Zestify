@@ -848,7 +848,7 @@ export default function Home() {
           />
         </ScrollView>
       ) : (
-        <View style={{ width: "100%" }}>
+        <View style={{ width: "100%", height: "100%" }}>
           <Text
             style={{
               marginLeft: "5%",
@@ -868,7 +868,18 @@ export default function Home() {
             data={dataSearch}
             keyExtractor={(item) => item.id}
             renderItem={render2List}
+            ListFooterComponent={() => {
+              return (
+                <View
+                  style={{
+                    height: 100,
+                    width: "100%",
+                  }}
+                ></View>
+              );
+            }}
           />
+          <View style={{ height: 50, width: "100%" }}></View>
         </View>
       )}
     </View>
