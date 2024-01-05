@@ -51,7 +51,7 @@ export default function Store({ route }) {
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
       <ScrollView style={{ flex: 3.5 }}>
-        <View style={{ height: "25%" }}>
+        <View style={{ height: 240 }}>
           <ImageBackground
             source={{
               uri: data.banner,
@@ -144,7 +144,7 @@ export default function Store({ route }) {
         </View>
         <View>
           <View style={{ flexDirection: "row", marginTop: "4.5%" }}>
-            <View style={{ flex: 2.5 }}>
+            <View style={{ flex: 2.5, paddingRight: 15 }}>
               <Text
                 style={{
                   fontSize: 24,
@@ -233,12 +233,12 @@ export default function Store({ route }) {
               <View
                 style={{
                   width: "80%",
-                  height: 24,
                   marginTop: 10,
                   backgroundColor: "#BF41B7",
                   justifyContent: "center",
                   alignItems: "center",
-                  borderRadius: 15,
+                  borderRadius: 5000,
+                  padding: 5,
                 }}
               >
                 <Text
@@ -247,6 +247,7 @@ export default function Store({ route }) {
                     fontWeight: 300,
                     color: "white",
                   }}
+                  numberOfLines={1}
                 >
                   {data.stock} left
                 </Text>
@@ -254,12 +255,12 @@ export default function Store({ route }) {
               <View
                 style={{
                   width: "80%",
-                  height: 24,
                   marginTop: 5,
                   backgroundColor: "#BF41B7",
                   justifyContent: "center",
                   alignItems: "center",
-                  borderRadius: 15,
+                  borderRadius: 5000,
+                  padding: 5,
                   flexDirection: "row",
                 }}
               >

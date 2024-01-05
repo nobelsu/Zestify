@@ -50,13 +50,13 @@ export default function Tag(props) {
         justifyContent: "center",
         alignItems: "center",
         padding: 8,
-        borderRadius: 5,
+        borderRadius: 13,
       }}
     >
       <Text
         style={{
           flexWrap: "wrap",
-          color: val > 0.5 ? "black" : "white",
+          color: val >= 130 ? "black" : "white",
           fontSize: 14,
           fontWeight: 200,
         }}
