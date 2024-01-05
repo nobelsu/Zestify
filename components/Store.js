@@ -12,11 +12,14 @@ import {
   ScrollView,
   ImageBackground,
   Image,
+  FlatList,
+  SectionList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import Badge from "./Badge";
 import { db } from "../firebase";
+import Tag from "./Tags";
 import {
   collection,
   query,
@@ -39,9 +42,9 @@ export default function Store({ route }) {
       const docRef = doc(db, "stores", route.params.store);
       const userRef = doc(db, "users", route.params.user);
       const docSnap = await getDoc(docRef);
+      await setData({ ...docSnap.data(), id: route.params.store });
       const userSnap = await getDoc(userRef);
-      setData({ ...docSnap.data(), id: route.params.store });
-      setHearted(userSnap.data().fav.includes(route.params.store));
+      await setHearted(userSnap.data().fav.includes(route.params.store));
     }
     Temp();
   }, []);
@@ -335,7 +338,16 @@ export default function Store({ route }) {
               >
                 Ingredients & Allergens
               </Text>
-              <Text
+              <FlatList
+                style={{ paddingTop: 4, paddingBottom: 4, marginTop: 8 }}
+                keyExtractor={(item) => item}
+                data={data.ing}
+                renderItem={({ item }) => <Tag text={item} />}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+
+              {/* <Text
                 style={{
                   textAlign: "justify",
                   marginTop: 8,
@@ -343,7 +355,7 @@ export default function Store({ route }) {
                 }}
               >
                 Flour, eggs, sugar
-              </Text>
+              </Text> */}
             </View>
             <View
               style={{
