@@ -36,28 +36,22 @@ import rgbToHsl from "../exports";
 const SCWIDTH = Dimensions.get("window").width;
 
 export default function Tag(props) {
-  const red = Math.floor(Math.random() * 255);
-  const green = Math.floor(Math.random() * 255);
-  const blue = Math.floor(Math.random() * 255);
-  const val = rgbToHsl(red, green, blue);
-  useEffect(() => {}, []);
   return (
     <View
       style={{
-        backgroundColor: `rgb(${red}, ${green}, ${blue})`,
+        backgroundColor: "#30D9BA",
         width: SCWIDTH * 0.25,
         marginRight: SCWIDTH * 0.03,
         justifyContent: "center",
         alignItems: "center",
-        padding: 8,
-        borderRadius: 13,
+        padding: 5,
+        borderRadius: 5000,
       }}
     >
       <Text
         style={{
           flexWrap: "wrap",
-          color: val >= 130 ? "black" : "white",
-          fontSize: 14,
+          color: "black",
           fontWeight: 200,
         }}
       >

@@ -234,7 +234,7 @@ export default function Store({ route }) {
                 style={{
                   width: "80%",
                   marginTop: 10,
-                  backgroundColor: "#BF41B7",
+                  backgroundColor: "#177359",
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: 5000,
@@ -256,7 +256,7 @@ export default function Store({ route }) {
                 style={{
                   width: "80%",
                   marginTop: 5,
-                  backgroundColor: "#BF41B7",
+                  backgroundColor: "#177359",
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: 5000,
