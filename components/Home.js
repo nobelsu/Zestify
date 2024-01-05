@@ -138,7 +138,7 @@ export default function Home() {
     return (
       <View
         style={{
-          height: 200,
+          height: 275,
           width: SCWIDTH * 0.9,
           marginLeft: SCWIDTH * 0.05,
           marginRight: SCWIDTH * 0.05,
@@ -176,34 +176,90 @@ export default function Home() {
               }}
             />
           </ImageBackground>
-          <View style={{ flexDirection: "row" }}>
-            <View style={{ flex: 2 }}>
-              <Text
+          <Text
+            style={{
+              marginTop: SCWIDTH * 0.07,
+              marginLeft: SCWIDTH * 0.03,
+              marginRight: SCWIDTH * 0.03,
+              marginBottom: 5,
+              fontWeight: 400,
+              fontSize: 14,
+            }}
+            numberOfLines={1}
+          >
+            {item.name}
+          </Text>
+          <Text
+            style={{
+              marginLeft: SCWIDTH * 0.03,
+              marginRight: SCWIDTH * 0.03,
+              fontWeight: 200,
+              fontSize: 12,
+              textAlign: "justify",
+              marginBottom: 10,
+            }}
+            numberOfLines={4}
+          >
+            {item.desc}
+          </Text>
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <View
+              style={{
+                flex: 2,
+                justifyContent: "center",
+              }}
+            >
+              <View
                 style={{
-                  marginTop: SCWIDTH * 0.07,
+                  flexDirection: "row",
+                  marginBottom: "2%",
+                  width: "90%",
                   marginLeft: SCWIDTH * 0.03,
-                  fontWeight: 400,
-                  fontSize: 14,
                 }}
-                numberOfLines={1}
               >
-                {item.name}
-              </Text>
-              <Text
+                <Ionicons
+                  name="location-sharp"
+                  size={15}
+                  style={{ color: "#BF41B7" }}
+                />
+                <Text
+                  style={{
+                    marginLeft: 3,
+                    fontSize: 12,
+                    marginTop: 0.2,
+                    fontWeight: 200,
+                  }}
+                  numberOfLines={2}
+                >
+                  {item.loc}
+                </Text>
+              </View>
+              <View
                 style={{
+                  flexDirection: "row",
+                  marginBottom: "2%",
+                  width: "90%",
                   marginLeft: SCWIDTH * 0.03,
-                  fontWeight: 200,
-                  fontSize: 12,
-                  textAlign: "justify",
                 }}
-                numberOfLines={4}
               >
-                {item.desc}
-              </Text>
+                <Ionicons name="time" size={15} style={{ color: "#BF41B7" }} />
+                <Text
+                  style={{
+                    marginLeft: 3,
+                    fontSize: 12,
+                    marginTop: 0.2,
+                    fontWeight: 200,
+                  }}
+                  numberOfLines={1}
+                >
+                  {item.collectionStart} - {item.collectionEnd}
+                </Text>
+              </View>
             </View>
             <View
               style={{
-                flex: 1,
+                flex: 1.2,
+                justifyContent: "center",
               }}
             >
               <Text
@@ -213,14 +269,13 @@ export default function Home() {
                   textDecorationStyle: "solid",
                   color: "grey",
                   marginLeft: 20,
-                  marginTop: 28,
                 }}
               >
                 ${item.oriprice}
               </Text>
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: 23,
                   fontWeight: 700,
                   marginTop: "1%",
                   marginLeft: 20,
@@ -239,7 +294,7 @@ export default function Home() {
     return (
       <View
         style={{
-          height: 250,
+          height: 280,
           width: SCWIDTH * 0.35,
           marginRight: SCWIDTH * 0.02,
           backgroundColor: "white",
@@ -305,8 +360,33 @@ export default function Home() {
           <View
             style={{
               flexDirection: "row",
-              marginTop: "10%",
-              marginBottom: "1%",
+              marginBottom: "2%",
+              width: SCWIDTH * 0.35 * 0.8,
+              justifyContent: "center",
+              marginTop: 10,
+            }}
+          >
+            <Ionicons
+              name="location-sharp"
+              size={15}
+              style={{ color: "#BF41B7" }}
+            />
+            <Text
+              style={{
+                marginLeft: 3,
+                color: "grey",
+                fontSize: 12,
+                marginTop: 0.2,
+              }}
+              numberOfLines={1}
+            >
+              {item.loc}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              marginBottom: "2%",
               width: SCWIDTH * 0.35 * 0.8,
               justifyContent: "center",
             }}
@@ -315,14 +395,34 @@ export default function Home() {
             <Text
               style={{
                 marginLeft: 3,
-                color: "#BF41B7",
+                color: "grey",
                 fontSize: 12,
                 marginTop: 0.2,
               }}
               numberOfLines={1}
             >
-              {item.rating * 5} |{" "}
-              <Text style={{ fontWeight: 700 }}>{item.revcnt} sold</Text>
+              {item.rating * 5} | {item.revcnt} sold
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              marginBottom: "2%",
+              width: SCWIDTH * 0.35 * 0.8,
+              justifyContent: "center",
+            }}
+          >
+            <Ionicons name="time" size={15} style={{ color: "#BF41B7" }} />
+            <Text
+              style={{
+                marginLeft: 3,
+                color: "grey",
+                fontSize: 12,
+                marginTop: 0.2,
+              }}
+              numberOfLines={1}
+            >
+              {item.collectionStart} - {item.collectionEnd}
             </Text>
           </View>
         </Pressable>
@@ -334,7 +434,7 @@ export default function Home() {
     return (
       <View
         style={{
-          height: 270,
+          height: 300,
           width: SCWIDTH * 0.425,
           marginTop: 10,
           backgroundColor: "white",
@@ -402,8 +502,33 @@ export default function Home() {
           <View
             style={{
               flexDirection: "row",
-              marginTop: "10%",
-              marginBottom: "1%",
+              marginBottom: "2%",
+              width: SCWIDTH * 0.35 * 0.8,
+              justifyContent: "center",
+              marginTop: 10,
+            }}
+          >
+            <Ionicons
+              name="location-sharp"
+              size={15}
+              style={{ color: "#BF41B7" }}
+            />
+            <Text
+              style={{
+                marginLeft: 3,
+                color: "grey",
+                fontSize: 12,
+                marginTop: 0.2,
+              }}
+              numberOfLines={1}
+            >
+              {item.loc}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              marginBottom: "2%",
               width: SCWIDTH * 0.35 * 0.8,
               justifyContent: "center",
             }}
@@ -412,14 +537,34 @@ export default function Home() {
             <Text
               style={{
                 marginLeft: 3,
-                color: "#BF41B7",
+                color: "grey",
                 fontSize: 12,
                 marginTop: 0.2,
               }}
               numberOfLines={1}
             >
-              {item.rating * 5} |{" "}
-              <Text style={{ fontWeight: 700 }}>{item.revcnt} sold</Text>
+              {item.rating * 5} | {item.revcnt} sold
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              marginBottom: "2%",
+              width: SCWIDTH * 0.35 * 0.8,
+              justifyContent: "center",
+            }}
+          >
+            <Ionicons name="time" size={15} style={{ color: "#BF41B7" }} />
+            <Text
+              style={{
+                marginLeft: 3,
+                color: "grey",
+                fontSize: 12,
+                marginTop: 0.2,
+              }}
+              numberOfLines={1}
+            >
+              {item.collectionStart} - {item.collectionEnd}
             </Text>
           </View>
         </Pressable>
