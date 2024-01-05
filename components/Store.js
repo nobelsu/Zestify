@@ -37,8 +37,11 @@ export default function Store({ route }) {
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "stores", route.params.store);
+      const userRef = doc(db, "users", route.params.user);
       const docSnap = await getDoc(docRef);
+      const userSnap = await getDoc(userRef);
       setData({ ...docSnap.data(), id: route.params.store });
+      setHearted(userSnap.data().fav.includes(route.params.store));
     }
     Temp();
   }, []);
@@ -90,8 +93,15 @@ export default function Store({ route }) {
                   }}
                 >
                   <Pressable
-                    onPress={() => {
+                    onPress={async () => {
                       setHearted(!hearted);
+                      const ref = doc(db, "users", route.params.user);
+                      const snap = await getDoc(ref);
+                      const ori = snap.data()["fav"];
+                      if (hearted)
+                        ori.splice(ori.indexOf(route.params.store), 1);
+                      else ori.push(route.params.store);
+                      await updateDoc(ref, { fav: ori });
                     }}
                   >
                     <Ionicons

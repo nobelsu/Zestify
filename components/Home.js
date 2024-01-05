@@ -93,11 +93,10 @@ export default function Home() {
   const user = value.params.user;
 
   useEffect(() => {
+    const ref = collection(db, "stores");
+    const qnew = query(ref, where("new", "==", true));
+    const qpromo = query(ref, where("promo", "==", true));
     async function Temp() {
-      const ref = collection(db, "stores");
-      const qnew = query(ref, where("new", "==", true));
-      const qpromo = query(ref, where("promo", "==", true));
-      const qsearch = query(ref, where("name", "!=", ""));
       onSnapshot(qnew, (querySnapshot) => {
         const dat = querySnapshot.docs.map((doc) => {
           return { ...doc.data(), id: doc.id };
@@ -116,8 +115,8 @@ export default function Home() {
 
   useEffect(() => {
     const ref = collection(db, "stores");
+    const qsearch = query(ref, where("name", "!=", ""));
     async function Temp() {
-      const qsearch = query(ref, where("name", "!=", ""));
       onSnapshot(qsearch, (querySnapshot) => {
         const dat = querySnapshot.docs.map((doc) => {
           return { ...doc.data(), id: doc.id };
@@ -197,7 +196,7 @@ export default function Home() {
                   fontSize: 12,
                   textAlign: "justify",
                 }}
-                numberOfLines={3}
+                numberOfLines={4}
               >
                 {item.desc}
               </Text>
@@ -711,10 +710,10 @@ export default function Home() {
               marginTop: "5%",
               fontSize: 20,
               fontWeight: 900,
-              numberOfLines: 1,
               width: "90%",
               marginBottom: "2%",
             }}
+            numberOfLines={1}
           >
             {searchVal == "" ? "All stores" : `Results for "${searchVal}"`}
           </Text>
