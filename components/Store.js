@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -14,6 +14,8 @@ import {
   Image,
   FlatList,
   SectionList,
+  Modal,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
@@ -31,12 +33,18 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 
+const SCWIDTH = Dimensions.get("window").width;
+const SCHEIGHT = Dimensions.get("window").height;
+
 export default function Store({ route }) {
   const navigation = useNavigation();
   const [hearted, setHearted] = useState(false); // adjust based on data stored
   const [numLines, setnumLines] = useState(3);
   const [textSee, settextSee] = useState("See more");
   const [data, setData] = useState({});
+  const [vis, setVis] = useState(false);
+  const [pur, setPur] = useState(1);
+  const timer = useRef(null);
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "stores", route.params.store);
@@ -50,6 +58,158 @@ export default function Store({ route }) {
   }, []);
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
+      <Modal transparent={true} visible={vis} animationType="fade">
+        <Pressable
+          style={{
+            height: SCHEIGHT - 370,
+            width: "100%",
+            justifyContent: "flex-end",
+            backgroundColor: `rgba(0, 0, 0, 0.6)`,
+          }}
+          onPress={() => {
+            setVis(false);
+            setPur(1);
+          }}
+        />
+        <View
+          style={{
+            backgroundColor: "white",
+            width: "100%",
+            height: 370,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: 800,
+              fontSize: 20,
+              textAlign: "center",
+              width: "90%",
+            }}
+            numberOfLines={1}
+          >
+            {data.name}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginBottom: 20,
+              justifyContent: "center",
+              alignItems: "center",
+              width: "90%",
+              marginTop: 10,
+            }}
+          >
+            <Ionicons name="time" size={20} style={{ color: "#BF41B7" }} />
+            <Text
+              style={{
+                marginLeft: 3,
+                textAlign: "center",
+              }}
+              numberOfLines={1}
+            >
+              {data.collectionStart} - {data.collectionEnd}
+            </Text>
+          </View>
+          <View
+            style={{
+              alignItems: "center",
+              width: "90%",
+              borderTopWidth: 0.2,
+              borderBottomWidth: 0.2,
+              paddingTop: 15,
+              paddingBottom: 5,
+            }}
+          >
+            <Text>Select quantity...</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Pressable
+                disabled={pur == 1}
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderWidth: 1,
+                  borderColor: pur == 1 ? "#e9e9e9" : "#BF41B7",
+                  backgroundColor: pur == 1 ? "#e9e9e9" : "white",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 100,
+                }}
+                onPress={() => {
+                  setPur(pur - 1);
+                }}
+              >
+                <Ionicons
+                  name="remove-outline"
+                  size={15}
+                  style={{ color: pur == 1 ? "white" : "#BF41B7" }}
+                />
+              </Pressable>
+              <Text
+                style={{
+                  marginLeft: 15,
+                  marginRight: 15,
+                  fontSize: 50,
+                  fontWeight: 900,
+                }}
+              >
+                {pur}
+              </Text>
+              <Pressable
+                disabled={pur == data.stock}
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderWidth: 1,
+                  borderColor: pur == data.stock ? "#e9e9e9" : "#BF41B7",
+                  backgroundColor: pur == data.stock ? "#e9e9e9" : "white",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 100,
+                }}
+                onPress={() => {
+                  setPur(pur + 1);
+                }}
+              >
+                <Ionicons
+                  name="add-outline"
+                  size={15}
+                  style={{ color: pur == data.stock ? "white" : "#BF41B7" }}
+                />
+              </Pressable>
+            </View>
+          </View>
+          <View style={{ width: "90%", flexDirection: "row", marginTop: 15 }}>
+            <View style={{ flex: 1 }}>
+              <Text>Total</Text>
+            </View>
+            <View style={{ flex: 1, alignItems: "flex-end" }}>
+              <Text>${(data.price * pur).toFixed(2)}</Text>
+            </View>
+          </View>
+          <Pressable
+            style={{
+              width: "90%",
+              backgroundColor: "#BF41B7",
+              height: 40,
+              marginLeft: "2%",
+              borderRadius: "10%",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 50,
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 14 }}>Confirm</Text>
+          </Pressable>
+        </View>
+      </Modal>
       <ScrollView style={{ flex: 3.5 }}>
         <View style={{ height: 240 }}>
           <ImageBackground
@@ -414,6 +574,9 @@ export default function Store({ route }) {
             borderRadius: "10%",
             justifyContent: "center",
             alignItems: "center",
+          }}
+          onPress={() => {
+            setVis(true);
           }}
         >
           <Text style={{ color: "white", fontSize: 14 }}>Order</Text>
