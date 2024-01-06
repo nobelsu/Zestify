@@ -620,8 +620,8 @@ export default function Home() {
           </ImageBackground>
           <View
             style={{
-              marginLeft: SCWIDTH * 0.09,
-              width: SCWIDTH * 0.5,
+              marginLeft: SCWIDTH * 0.08,
+              width: SCWIDTH * 0.32,
               justifyContent: "center",
             }}
           >
@@ -640,7 +640,7 @@ export default function Home() {
               style={{
                 flexDirection: "row",
                 marginBottom: "2%",
-                width: SCWIDTH * 0.35 * 0.8,
+                width: SCWIDTH * 0.28,
                 marginTop: 10,
               }}
             >
@@ -665,7 +665,7 @@ export default function Home() {
               style={{
                 flexDirection: "row",
                 marginBottom: "2%",
-                width: SCWIDTH * 0.35 * 0.8,
+                width: SCWIDTH * 0.28,
               }}
             >
               <Ionicons name="star" size={15} style={{ color: "#FDCC0D" }} />
@@ -684,7 +684,7 @@ export default function Home() {
             <View
               style={{
                 flexDirection: "row",
-                width: SCWIDTH * 0.35 * 0.8,
+                width: SCWIDTH * 0.28,
               }}
             >
               <Ionicons name="time" size={15} style={{ color: "#BF41B7" }} />
@@ -700,6 +700,27 @@ export default function Home() {
                 {item.collectionStart} - {item.collectionEnd}
               </Text>
             </View>
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              width: SCWIDTH * 0.22,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                textDecorationLine: "line-through",
+                textDecorationStyle: "solid",
+                color: "grey",
+              }}
+            >
+              ${item.oriprice}
+            </Text>
+            <Text style={{ fontSize: 16, fontWeight: 700, marginTop: "1%" }}>
+              ${item.price}
+            </Text>
           </View>
         </Pressable>
       </View>
