@@ -390,7 +390,7 @@ export default function Store({ route }) {
           paddingTop: "3%",
         }}
       >
-        <Pressable
+        {/* <Pressable
           style={{
             width: "45%",
             backgroundColor: "white",
@@ -404,10 +404,10 @@ export default function Store({ route }) {
           }}
         >
           <Text style={{ color: "#BF41B7", fontSize: 14 }}>Reserve</Text>
-        </Pressable>
+        </Pressable> */}
         <Pressable
           style={{
-            width: "45%",
+            width: "90%",
             backgroundColor: "#BF41B7",
             height: "50%",
             marginLeft: "2%",

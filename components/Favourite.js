@@ -137,7 +137,7 @@ export default function Favourites() {
           return (
             <View
               style={{
-                height: SCWIDTH * 0.26,
+                height: 110,
                 width: SCWIDTH * 0.9,
                 marginLeft: SCWIDTH * 0.05,
                 backgroundColor: "white",
@@ -156,8 +156,9 @@ export default function Favourites() {
               >
                 <ImageBackground
                   style={{
-                    height: SCWIDTH * 0.26,
+                    height: 110,
                     width: SCWIDTH * 0.28,
+                    justifyContent: "center",
                   }}
                   imageStyle={{
                     borderTopLeftRadius: 10,
@@ -170,7 +171,6 @@ export default function Favourites() {
                     style={{
                       width: SCWIDTH * 0.2,
                       marginLeft: SCWIDTH * 0.15,
-                      marginTop: SCWIDTH * 0.03,
                       aspectRatio: 1,
                       borderRadius: 5000,
                       borderWidth: 2,

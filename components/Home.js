@@ -572,6 +572,140 @@ export default function Home() {
     );
   }
 
+  function renderLong({ item }) {
+    return (
+      <View
+        style={{
+          height: 120,
+          width: SCWIDTH * 0.9,
+          marginLeft: SCWIDTH * 0.05,
+          marginRight: SCWIDTH * 0.05,
+          backgroundColor: "white",
+          marginTop: 10,
+          borderRadius: 10,
+
+          // justifyContent: "center",
+          // alignItems: "center",
+        }}
+      >
+        <Pressable
+          onPress={() => {
+            navigation.navigate("Store", { user: user, store: item.id });
+          }}
+          style={{ flexDirection: "row" }}
+        >
+          <ImageBackground
+            style={{
+              height: 120,
+              width: SCWIDTH * 0.28,
+              justifyContent: "center",
+            }}
+            imageStyle={{
+              borderTopLeftRadius: 10,
+              borderBottomLeftRadius: 10,
+            }}
+            source={{ uri: item.banner }}
+          >
+            <Image
+              source={{ uri: item.logo }}
+              style={{
+                width: SCWIDTH * 0.2,
+                marginLeft: SCWIDTH * 0.15,
+                aspectRatio: 1,
+                borderRadius: 5000,
+                borderWidth: 2,
+                borderColor: "white",
+              }}
+            />
+          </ImageBackground>
+          <View
+            style={{
+              marginLeft: SCWIDTH * 0.09,
+              width: SCWIDTH * 0.5,
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                width: "80%",
+                fontWeight: 400,
+                fontSize: 14,
+              }}
+              numberOfLines={1}
+            >
+              {item.name}
+            </Text>
+
+            <View
+              style={{
+                flexDirection: "row",
+                marginBottom: "2%",
+                width: SCWIDTH * 0.35 * 0.8,
+                marginTop: 10,
+              }}
+            >
+              <Ionicons
+                name="location-sharp"
+                size={15}
+                style={{ color: "#BF41B7" }}
+              />
+              <Text
+                style={{
+                  marginLeft: 3,
+                  color: "grey",
+                  fontSize: 12,
+                  marginTop: 0.2,
+                }}
+                numberOfLines={1}
+              >
+                {item.loc}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                marginBottom: "2%",
+                width: SCWIDTH * 0.35 * 0.8,
+              }}
+            >
+              <Ionicons name="star" size={15} style={{ color: "#FDCC0D" }} />
+              <Text
+                style={{
+                  marginLeft: 3,
+                  color: "grey",
+                  fontSize: 12,
+                  marginTop: 0.2,
+                }}
+                numberOfLines={1}
+              >
+                {item.rating * 5} | {item.revcnt} sold
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                width: SCWIDTH * 0.35 * 0.8,
+              }}
+            >
+              <Ionicons name="time" size={15} style={{ color: "#BF41B7" }} />
+              <Text
+                style={{
+                  marginLeft: 3,
+                  color: "grey",
+                  fontSize: 12,
+                  marginTop: 0.2,
+                }}
+                numberOfLines={1}
+              >
+                {item.collectionStart} - {item.collectionEnd}
+              </Text>
+            </View>
+          </View>
+        </Pressable>
+      </View>
+    );
+  }
+
   return (
     <View style={{ height: "100%", width: "100%" }}>
       <View
@@ -839,12 +973,15 @@ export default function Home() {
             Support your local businesses!
           </Text>
           <FlatList
+            data={dataNew}
+            keyExtractor={(item) => item.id}
+            style={{ marginTop: "3%", marginBottom: "10%" }}
+            renderItem={renderLong}
             horizontal
             showsHorizontalScrollIndicator={false}
-            data={data}
-            keyExtractor={(item) => item.id}
-            style={{ marginLeft: "5%", marginTop: "3%" }}
-            renderItem={renderSmall}
+            snapToAlignment="center"
+            snapToInterval={SCWIDTH}
+            decelerationRate={"fast"}
           />
         </ScrollView>
       ) : (
