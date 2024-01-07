@@ -31,6 +31,7 @@ import {
   where,
   collection,
   onSnapshot,
+  addDoc,
 } from "firebase/firestore";
 import { NetworkContext } from "../exports";
 
@@ -49,6 +50,7 @@ export default function Favourites() {
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const [focused, setFocused] = useState(false);
+  const [valoo, setValoo] = useState("");
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "users", user);
@@ -59,6 +61,7 @@ export default function Favourites() {
         const dat = querySnapshot.docs.map((doc) => {
           return { ...doc.data(), id: doc.id };
         });
+        setValoo(docSnap.data().name);
         setData(
           dat.filter((d) => {
             return (
@@ -221,6 +224,21 @@ export default function Favourites() {
               alignItems: "center",
               marginTop: 50,
               marginBottom: 10,
+            }}
+            onPress={async () => {
+              const docRef = await addDoc(collection(db, "orders"), {
+                quantity: pur,
+                store: purchData.id,
+                user: user,
+              });
+              navigation.navigate("Reserve", {
+                ...purchData,
+                pur: pur,
+                user: user,
+                orderID: docRef.id,
+                username: valoo,
+              });
+              setVis(false);
             }}
           >
             <Text style={{ color: "white", fontSize: 14 }}>Confirm</Text>
