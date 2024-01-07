@@ -13,6 +13,7 @@ import Favourites from "./components/Favourite";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import { NetworkContext } from "./exports";
+import Reserve from "./components/Reserve";
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
           }}
         />
         <Stack.Screen name="Store" component={Store} />
+        <Stack.Screen name="Reserve" component={Reserve} />
       </Stack.Navigator>
     </NavigationContainer>
   );

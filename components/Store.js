@@ -31,6 +31,7 @@ import {
   getDoc,
   updateDoc,
   onSnapshot,
+  addDoc,
 } from "firebase/firestore";
 
 const SCWIDTH = Dimensions.get("window").width;
@@ -44,6 +45,7 @@ export default function Store({ route }) {
   const [data, setData] = useState({});
   const [vis, setVis] = useState(false);
   const [pur, setPur] = useState(1);
+  const [val, setVal] = useState("");
   const timer = useRef(null);
   useEffect(() => {
     async function Temp() {
@@ -53,6 +55,7 @@ export default function Store({ route }) {
       await setData({ ...docSnap.data(), id: route.params.store });
       const userSnap = await getDoc(userRef);
       await setHearted(userSnap.data().fav.includes(route.params.store));
+      setVal(userSnap.data().name);
     }
     Temp();
   }, []);
@@ -204,6 +207,21 @@ export default function Store({ route }) {
               alignItems: "center",
               marginTop: 50,
               marginBottom: 10,
+            }}
+            onPress={async () => {
+              const docRef = await addDoc(collection(db, "orders"), {
+                quantity: pur,
+                store: route.params.store,
+                user: route.params.user,
+              });
+              navigation.navigate("Reserve", {
+                ...data,
+                pur: pur,
+                user: route.params.user,
+                orderID: docRef.id,
+                username: val,
+              });
+              setVis(false);
             }}
           >
             <Text style={{ color: "white", fontSize: 14 }}>Confirm</Text>
@@ -579,7 +597,7 @@ export default function Store({ route }) {
             setVis(true);
           }}
         >
-          <Text style={{ color: "white", fontSize: 14 }}>Order</Text>
+          <Text style={{ color: "white", fontSize: 14 }}>Reserve</Text>
         </Pressable>
       </View>
     </View>
