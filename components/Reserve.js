@@ -82,6 +82,7 @@ export default function Reserve({ route }) {
       <View
         style={{
           marginTop: 15,
+          marginBottom: 50,
           paddingTop: 25,
           paddingBottom: 25,
           marginLeft: "5%",
@@ -91,7 +92,7 @@ export default function Reserve({ route }) {
           borderRadius: 20,
         }}
       >
-        <Text style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>
+        <Text style={{ fontSize: 20, fontWeight: 600, marginBottom: 20 }}>
           {route.params.name}
         </Text>
         <View style={{ flexDirection: "row", width: "90%", marginBottom: 10 }}>
@@ -133,6 +134,14 @@ export default function Reserve({ route }) {
             {route.params.pur}
           </Text>
           <Text>mystery boxes!</Text>
+        </View>
+        <View style={{ width: "90%", flexDirection: "row", marginTop: 15 }}>
+          <View style={{ flex: 1 }}>
+            <Text>Total</Text>
+          </View>
+          <View style={{ flex: 1, alignItems: "flex-end" }}>
+            <Text>${(route.params.price * route.params.pur).toFixed(2)}</Text>
+          </View>
         </View>
         <Text
           style={{
