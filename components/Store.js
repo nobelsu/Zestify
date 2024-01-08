@@ -210,13 +210,6 @@ export default function Store({ route }) {
               marginBottom: 10,
             }}
             onPress={async () => {
-              const docRef = await addDoc(collection(db, "orders"), {
-                quantity: pur,
-                store: route.params.store,
-                user: route.params.user,
-                status: 0,
-              });
-
               const storeRef = doc(db, "stores", route.params.store);
               const storeSnap = await getDoc(storeRef);
               console.log(storeSnap.data().stock);
@@ -226,9 +219,17 @@ export default function Store({ route }) {
                 setVis2(true);
                 return;
               }
+              const docRef = await addDoc(collection(db, "orders"), {
+                quantity: pur,
+                store: route.params.store,
+                user: route.params.user,
+                status: 0,
+              });
               await updateDoc(storeRef, {
                 stock: storeSnap.data().stock - pur,
+                orders: [...storeSnap.data().orders, docRef.id],
               });
+
               navigation.navigate("Reserve", {
                 ...data,
                 pur: pur,

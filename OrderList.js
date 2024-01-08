@@ -32,3 +32,9 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { NetworkContext } from "../exports";
+
+export default function OrderList() {
+  const value = useContext(NetworkContext);
+  const user = value.params.user;
+  const navigation = useNavigation();
+}
