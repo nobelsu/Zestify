@@ -18,6 +18,7 @@ import {
   Dimensions,
   Keyboard,
   Modal,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
@@ -44,6 +45,7 @@ export default function Favourites() {
   const [val, setVal] = useState("");
   const [purchData, setPurchData] = useState({});
   const [vis, setVis] = useState(false);
+  const [vis2, setVis2] = useState(false);
   const [pur, setPur] = useState(1);
   const value = useContext(NetworkContext);
   const user = value.params.user;
@@ -180,13 +182,13 @@ export default function Favourites() {
                 {pur}
               </Text>
               <Pressable
-                disabled={pur == purchData.stock}
+                disabled={pur >= purchData.stock}
                 style={{
                   width: 32,
                   height: 32,
                   borderWidth: 1,
-                  borderColor: pur == purchData.stock ? "#e9e9e9" : "#BF41B7",
-                  backgroundColor: pur == purchData.stock ? "#e9e9e9" : "white",
+                  borderColor: pur >= purchData.stock ? "#e9e9e9" : "#BF41B7",
+                  backgroundColor: pur >= purchData.stock ? "#e9e9e9" : "white",
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: 100,
@@ -199,7 +201,7 @@ export default function Favourites() {
                   name="add-outline"
                   size={15}
                   style={{
-                    color: pur == purchData.stock ? "white" : "#BF41B7",
+                    color: pur >= purchData.stock ? "white" : "#BF41B7",
                   }}
                 />
               </Pressable>
@@ -230,6 +232,19 @@ export default function Favourites() {
                 quantity: pur,
                 store: purchData.id,
                 user: user,
+                status: 0,
+              });
+              const storeRef = doc(db, "stores", purchData.id);
+              const storeSnap = await getDoc(storeRef);
+              console.log(storeSnap.data().stock);
+              if (storeSnap.data().stock < pur) {
+                setPur(1);
+                setVis(false);
+                setVis2(true);
+                return;
+              }
+              await updateDoc(storeRef, {
+                stock: storeSnap.data().stock - pur,
               });
               navigation.navigate("Reserve", {
                 ...purchData,
@@ -238,12 +253,56 @@ export default function Favourites() {
                 orderID: docRef.id,
                 username: valoo,
               });
+              setPur(1);
               setVis(false);
             }}
           >
             <Text style={{ color: "white", fontSize: 14 }}>Confirm</Text>
           </Pressable>
         </View>
+      </Modal>
+      <Modal transparent={true} visible={vis2} animationType="fade">
+        <Pressable
+          style={{
+            height: "100%",
+            width: "100%",
+            backgroundColor: `rgba(0, 0, 0, 0.6)`,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            setVis2(false);
+          }}
+        >
+          <View
+            style={{
+              height: 240,
+              width: 280,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "white",
+              borderRadius: 15,
+            }}
+          >
+            <Ionicons color={"#BF41B7"} name="alert-circle-outline" size={80} />
+            <Text
+              style={{
+                marginTop: 10,
+                marginBottom: 10,
+                fontWeight: 600,
+                fontSize: 16,
+                width: "90%",
+                textAlign: "center",
+              }}
+            >
+              Reserve failed
+            </Text>
+            <Text style={{ width: "90%", textAlign: "center" }}>
+              The store's stock has updated. Reload the page to view the
+              changes!
+            </Text>
+          </View>
+        </Pressable>
       </Modal>
       <View
         style={{

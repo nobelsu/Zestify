@@ -44,6 +44,7 @@ export default function Store({ route }) {
   const [textSee, settextSee] = useState("See more");
   const [data, setData] = useState({});
   const [vis, setVis] = useState(false);
+  const [vis2, setVis2] = useState(false);
   const [pur, setPur] = useState(1);
   const [val, setVal] = useState("");
   const timer = useRef(null);
@@ -165,13 +166,13 @@ export default function Store({ route }) {
                 {pur}
               </Text>
               <Pressable
-                disabled={pur == data.stock}
+                disabled={pur >= data.stock}
                 style={{
                   width: 32,
                   height: 32,
                   borderWidth: 1,
-                  borderColor: pur == data.stock ? "#e9e9e9" : "#BF41B7",
-                  backgroundColor: pur == data.stock ? "#e9e9e9" : "white",
+                  borderColor: pur >= data.stock ? "#e9e9e9" : "#BF41B7",
+                  backgroundColor: pur >= data.stock ? "#e9e9e9" : "white",
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: 100,
@@ -183,7 +184,7 @@ export default function Store({ route }) {
                 <Ionicons
                   name="add-outline"
                   size={15}
-                  style={{ color: pur == data.stock ? "white" : "#BF41B7" }}
+                  style={{ color: pur >= data.stock ? "white" : "#BF41B7" }}
                 />
               </Pressable>
             </View>
@@ -213,6 +214,20 @@ export default function Store({ route }) {
                 quantity: pur,
                 store: route.params.store,
                 user: route.params.user,
+                status: 0,
+              });
+
+              const storeRef = doc(db, "stores", route.params.store);
+              const storeSnap = await getDoc(storeRef);
+              console.log(storeSnap.data().stock);
+              if (storeSnap.data().stock < pur) {
+                setPur(1);
+                setVis(false);
+                setVis2(true);
+                return;
+              }
+              await updateDoc(storeRef, {
+                stock: storeSnap.data().stock - pur,
               });
               navigation.navigate("Reserve", {
                 ...data,
@@ -227,6 +242,49 @@ export default function Store({ route }) {
             <Text style={{ color: "white", fontSize: 14 }}>Confirm</Text>
           </Pressable>
         </View>
+      </Modal>
+      <Modal transparent={true} visible={vis2} animationType="fade">
+        <Pressable
+          style={{
+            height: "100%",
+            width: "100%",
+            backgroundColor: `rgba(0, 0, 0, 0.6)`,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            setVis2(false);
+          }}
+        >
+          <View
+            style={{
+              height: 240,
+              width: 280,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "white",
+              borderRadius: 15,
+            }}
+          >
+            <Ionicons color={"#BF41B7"} name="alert-circle-outline" size={80} />
+            <Text
+              style={{
+                marginTop: 10,
+                marginBottom: 10,
+                fontWeight: 600,
+                fontSize: 16,
+                width: "90%",
+                textAlign: "center",
+              }}
+            >
+              Reserve failed
+            </Text>
+            <Text style={{ width: "90%", textAlign: "center" }}>
+              The store's stock has updated. Reload the page to view the
+              changes!
+            </Text>
+          </View>
+        </Pressable>
       </Modal>
       <ScrollView style={{ flex: 3.5 }}>
         <View style={{ height: 240 }}>
