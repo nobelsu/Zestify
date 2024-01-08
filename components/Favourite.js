@@ -58,6 +58,7 @@ export default function Favourites() {
       const docRef = doc(db, "users", user);
       const docSnap = await getDoc(docRef);
       const ref = collection(db, "stores");
+
       const q = query(ref, where("name", "!=", ""));
       onSnapshot(q, (querySnapshot) => {
         const dat = querySnapshot.docs.map((doc) => {
@@ -229,8 +230,9 @@ export default function Favourites() {
             }}
             onPress={async () => {
               const storeRef = doc(db, "stores", purchData.id);
+              const userRef = doc(db, "users", user);
               const storeSnap = await getDoc(storeRef);
-              console.log(storeSnap.data().stock);
+              const userSnap = await getDoc(userRef);
               if (storeSnap.data().stock < pur) {
                 setPur(1);
                 setVis(false);
@@ -242,10 +244,14 @@ export default function Favourites() {
                 store: purchData.id,
                 user: user,
                 status: 0,
+                storeName: storeSnap.data().name,
               });
               await updateDoc(storeRef, {
                 stock: storeSnap.data().stock - pur,
-                orders: [...storeSnap.data().orders, docRef.id],
+                ord: [...storeSnap.data().orders, docRef.id],
+              });
+              await updateDoc(userRef, {
+                ord: [...userSnap.data().ord, docRef.id],
               });
               navigation.navigate("Reserve", {
                 ...purchData,

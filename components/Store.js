@@ -212,7 +212,8 @@ export default function Store({ route }) {
             onPress={async () => {
               const storeRef = doc(db, "stores", route.params.store);
               const storeSnap = await getDoc(storeRef);
-              console.log(storeSnap.data().stock);
+              const userRef = doc(db, "users", route.params.user);
+              const userSnap = await getDoc(userRef);
               if (storeSnap.data().stock < pur) {
                 setPur(1);
                 setVis(false);
@@ -222,12 +223,16 @@ export default function Store({ route }) {
               const docRef = await addDoc(collection(db, "orders"), {
                 quantity: pur,
                 store: route.params.store,
+                storeName: storeSnap.data().name,
                 user: route.params.user,
                 status: 0,
               });
               await updateDoc(storeRef, {
                 stock: storeSnap.data().stock - pur,
-                orders: [...storeSnap.data().orders, docRef.id],
+                ord: [...storeSnap.data().orders, docRef.id],
+              });
+              await updateDoc(userRef, {
+                ord: [...userSnap.data().ord, docRef.id],
               });
 
               navigation.navigate("Reserve", {
