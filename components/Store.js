@@ -229,10 +229,10 @@ export default function Store({ route }) {
               });
               await updateDoc(storeRef, {
                 stock: storeSnap.data().stock - pur,
-                ord: [...storeSnap.data().orders, docRef.id],
+                orders: [...storeSnap.data().orders, docRef.id],
               });
               await updateDoc(userRef, {
-                ord: [...userSnap.data().ord, docRef.id],
+                orders: [...userSnap.data().orders, docRef.id],
               });
 
               navigation.navigate("Reserve", {

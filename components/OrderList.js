@@ -20,7 +20,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
-import { SwipeListView } from "react-native-swipe-list-view";
+import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 import { db } from "../firebase";
 import {
   collection,
@@ -31,6 +31,7 @@ import {
   getDoc,
   updateDoc,
   onSnapshot,
+  deleteDoc,
 } from "firebase/firestore";
 import { NetworkContext } from "../exports";
 
@@ -138,7 +139,6 @@ export default function OrderList() {
       <SwipeListView
         data={orders}
         renderItem={(data, rowMap) => {
-          const item = data.item;
           return (
             <View
               style={{
@@ -155,15 +155,15 @@ export default function OrderList() {
             >
               <Pressable
                 onPress={async () => {
-                  const docRef = doc(db, "stores", item.store);
+                  const docRef = doc(db, "stores", data.item.store);
                   const docSnap = await getDoc(docRef);
                   navigation.navigate("Reserve", {
                     ...docSnap.data(),
                     user: user,
-                    store: item.store,
-                    orderID: item.id,
+                    store: data.item.store,
+                    orderID: data.item.id,
                     username: name,
-                    pur: item.quantity,
+                    pur: data.item.quantity,
                   });
                 }}
                 style={{
@@ -174,7 +174,11 @@ export default function OrderList() {
                 }}
               >
                 <View
-                  style={{ flexDirection: "row", width: "90%", height: "90%" }}
+                  style={{
+                    flexDirection: "row",
+                    width: "90%",
+                    height: "90%",
+                  }}
                 >
                   <View style={{ flex: 2, justifyContent: "center" }}>
                     <Text
@@ -186,7 +190,7 @@ export default function OrderList() {
                       }}
                       numberOfLines={1}
                     >
-                      {item.storeName}
+                      {data.item.storeName}
                     </Text>
                     <Text>
                       <Text
@@ -196,7 +200,7 @@ export default function OrderList() {
                           fontSize: 18,
                         }}
                       >
-                        {item.quantity}
+                        {data.item.quantity}
                       </Text>{" "}
                       mystery boxes reserved!
                     </Text>
@@ -211,47 +215,17 @@ export default function OrderList() {
                     <Text style={{ marginBottom: 5, fontWeight: 600 }}>
                       Status:
                     </Text>
-                    <Text style={{ color: ini[item.status].color }}>
+                    <Text style={{ color: ini[data.item.status].color }}>
                       {" "}
-                      {ini[item.status].val}
+                      {ini[data.item.status].val}
                     </Text>
                   </View>
                 </View>
               </Pressable>
             </View>
-
-            // <View
-            //   style={{
-            //     marginTop: 10,
-            //     height: SCWIDTH * 0.26,
-            //     width: SCWIDTH * 0.9,
-            //     marginLeft: SCWIDTH * 0.05,
-            //     marginRight: SCWIDTH * 0.05,
-            //     backgroundColor: "white",
-            //     borderRadius: 10,
-            //     flexDirection: "row",
-            //   }}
-            // >
-            //   <Image
-            //     source={{ uri: item.logo }}
-            //     style={{
-            //       width: SCWIDTH * 0.2,
-            //       marginLeft: SCWIDTH * 0.03,
-            //       marginTop: SCWIDTH * 0.03,
-            //       aspectRatio: 1,
-            //       borderRadius: 5000,
-            //       borderWidth: 2,
-            //       borderColor: "white",
-            //     }}
-            //   />
-            //   <Text>{item.name}</Text>
-            // </View>
           );
         }}
         renderHiddenItem={(data, rowMap) => {
-          if (data.item.status) {
-            return <View />;
-          }
           return (
             <View
               style={{
@@ -273,7 +247,33 @@ export default function OrderList() {
                   backgroundColor: "red",
                   borderRadius: 25,
                 }}
-                onPress={async () => {}}
+                onPress={async () => {
+                  const orderRef = doc(db, "orders", data.item.id);
+                  const storeRef = doc(db, "stores", data.item.store);
+                  const storeSnap = await getDoc(storeRef);
+                  if (data.item.status == 0) {
+                    await updateDoc(storeRef, {
+                      stock: storeSnap.data().stock + data.item.quantity,
+                    });
+                    await updateDoc(orderRef, {
+                      status: 1,
+                    });
+                  } else {
+                    const ref = doc(db, "users", user);
+                    const snap = await getDoc(ref);
+                    const ori = snap.data()["orders"];
+                    ori.splice(ori.indexOf(data.item.id), 1);
+                    await updateDoc(ref, { orders: ori });
+
+                    const ref2 = doc(db, "stores", data.item.store);
+                    const snap2 = await getDoc(ref2);
+                    const ori2 = snap2.data()["orders"];
+                    ori2.splice(ori2.indexOf(data.item.id), 1);
+                    await updateDoc(ref2, { orders: ori2 });
+
+                    await deleteDoc(doc(db, "orders", data.item.id));
+                  }
+                }}
               >
                 <Ionicons name="trash-outline" size={24} color="white" />
               </Pressable>

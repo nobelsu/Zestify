@@ -248,10 +248,10 @@ export default function Favourites() {
               });
               await updateDoc(storeRef, {
                 stock: storeSnap.data().stock - pur,
-                ord: [...storeSnap.data().orders, docRef.id],
+                orders: [...storeSnap.data().orders, docRef.id],
               });
               await updateDoc(userRef, {
-                ord: [...userSnap.data().ord, docRef.id],
+                orders: [...userSnap.data().ord, docRef.id],
               });
               navigation.navigate("Reserve", {
                 ...purchData,
