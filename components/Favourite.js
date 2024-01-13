@@ -251,7 +251,7 @@ export default function Favourites() {
                 orders: [...storeSnap.data().orders, docRef.id],
               });
               await updateDoc(userRef, {
-                orders: [...userSnap.data().ord, docRef.id],
+                orders: [...userSnap.data().orders, docRef.id],
               });
               navigation.navigate("Reserve", {
                 ...purchData,
