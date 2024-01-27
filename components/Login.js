@@ -21,6 +21,18 @@ import * as Progress from "react-native-progress";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  onSnapshot,
+  deleteDoc,
+} from "firebase/firestore";
+import { db } from "../firebase";
 
 const SCWIDTH = Dimensions.get("window").width;
 
@@ -236,10 +248,22 @@ export default function Login() {
           signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
               const user = userCredential.user;
-              navigation.navigate("TabNav", {
-                screen: "Home",
-                user: user.uid,
-              });
+              async function Temp() {
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) {
+                  navigation.navigate("TabNav2", {
+                    screen: "Store",
+                    user: user.uid,
+                  });
+                } else {
+                  navigation.navigate("TabNav", {
+                    screen: "Home",
+                    user: user.uid,
+                  });
+                }
+              }
+              Temp();
             })
             .catch((error) => {
               setCodee(codes[error.code].msg);

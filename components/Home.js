@@ -33,52 +33,6 @@ import {
 } from "firebase/firestore";
 import { NetworkContext } from "../exports";
 
-const data = [
-  {
-    id: 0,
-    url: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
-    name: "Tous Les Jours",
-    price: "5.00",
-    logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
-    oriprice: "15.00",
-    rating: 0.9,
-    revcnt: 169,
-    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
-  },
-  {
-    id: 1,
-    url: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
-    name: "Tous Les Jours Second Shop",
-    price: "5.00",
-    logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
-    oriprice: "15.00",
-    rating: 0.9,
-    revcnt: 169,
-    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
-  },
-  {
-    id: 2,
-    url: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
-    name: "Tous Les Jours Second Shop",
-    price: "5.00",
-    logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
-    oriprice: "15.00",
-    rating: 0.9,
-    revcnt: 169,
-    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
-  },
-  {
-    id: 3,
-    url: "https://daebak.co/cdn/shop/articles/spotlight-on-tous-les-jours-daebak-753554_1080x.jpg?v=1663736497",
-    name: "Tous Les Jours Second Shop",
-    price: "5.00",
-    logo: "https://www.centralparkjakarta.com/wp-content/uploads/2017/11/tous.jpg",
-    oriprice: "15.00",
-    rating: 0.9,
-    revcnt: 200000000,
-    desc: "With a commitment to using only the finest ingredients, our products are known for their unique flavors and wholesomequalities. Our skilled bakers create a wide array of delicioustreats that are freshly baked and ready to be enjoyed by our customers seeking exceptional taste and quality.",
-  },
-];
 const SCWIDTH = Dimensions.get("window").width;
 
 export default function Home() {

@@ -11,10 +11,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Splash from "./components/Splash";
 import Favourites from "./components/Favourite";
 const Tab = createBottomTabNavigator();
+const Tab2 = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import { NetworkContext } from "./exports";
 import Reserve from "./components/Reserve";
 import OrderList from "./components/OrderList";
+import StoreSide from "./components/StoreSide";
 
 export default function App() {
   return (
@@ -52,6 +54,18 @@ export default function App() {
             );
           }}
           screenOptions={{ gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="TabNav2"
+          component={function Main2({ route }) {
+            return (
+              <NetworkContext.Provider value={route}>
+                <Tab2.Navigator screenOptions={{ headerShown: false }}>
+                  <Tab2.Screen name="Store" component={StoreSide} />
+                </Tab2.Navigator>
+              </NetworkContext.Provider>
+            );
+          }}
         />
         <Stack.Screen
           name="Store"

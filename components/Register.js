@@ -26,6 +26,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { db } from "../firebase";
+import SelectDropdown from "react-native-select-dropdown";
 const SCWIDTH = Dimensions.get("window").width;
 
 const codes = {
@@ -58,6 +59,7 @@ export default function Register() {
   const [emailValid, setEmailValid] = useState(true);
   const [passValid, setPassValid] = useState(true);
   const [codee, setCodee] = useState("");
+  const [typee, setTypee] = useState(0);
   return (
     <View
       style={{
@@ -196,6 +198,41 @@ export default function Register() {
             />
           </View>
         </View>
+        <SelectDropdown
+          data={["Customer", "Store"]}
+          onSelect={(selectedItem, index) => {
+            setTypee(index);
+          }}
+          buttonTextAfterSelection={(selectedItem, index) => {
+            // text represented after item is selected
+            // if data array is an array of objects then return selectedItem.property to render after item is selected
+            return selectedItem;
+          }}
+          rowTextForSelection={(item, index) => {
+            // text represented for each item in dropdown
+            // if data array is an array of objects then return item.property to represent item in dropdown
+            return item;
+          }}
+          defaultButtonText="Select type..."
+          buttonStyle={{
+            borderRadius: 15,
+            backgroundColor: "#BF41B7",
+            marginTop: 15,
+            width: "100%",
+          }}
+          buttonTextStyle={{ color: "white" }}
+          renderDropdownIcon={() => {
+            return (
+              <View style={{ marginRight: 20, marginLeft: -40 }}>
+                <Ionicons
+                  name="chevron-down-outline"
+                  size={20}
+                  style={{ color: "white" }}
+                />
+              </View>
+            );
+          }}
+        />
 
         <View>
           {!passValid ? (
@@ -250,17 +287,46 @@ export default function Register() {
               signInWithEmailAndPassword(auth, email, password).then(
                 (userCredential) => {
                   const user = userCredential.user;
-
-                  setDoc(doc(db, "users", user.uid), {
-                    orders: [],
-                    fav: [],
-                    name: "Temp",
-                  });
-
-                  navigation.navigate("TabNav", {
-                    screen: "Home",
-                    user: user.uid,
-                  });
+                  if (typee) {
+                    setDoc(doc(db, "stores", user.uid), {
+                      awards: [],
+                      banner: "",
+                      collectionEnd: "",
+                      collectionStart: "",
+                      desc: "",
+                      ing: [],
+                      loc: "",
+                      logo: "",
+                      name: "",
+                      new: true,
+                      orders: [],
+                      oriprice: "",
+                      price: "",
+                      promo: false,
+                      rating: 0,
+                      revcnt: 0,
+                      reviews: [],
+                      stock: 0,
+                      tags: [],
+                      today: true,
+                      tomorrow: false,
+                    });
+                    navigation.navigate("TabNav2", {
+                      screen: "Store",
+                      user: user.uid,
+                    });
+                  } else {
+                    setDoc(doc(db, "users", user.uid), {
+                      orders: [],
+                      fav: [],
+                      name: "Temp",
+                      type: typee,
+                    });
+                    navigation.navigate("TabNav", {
+                      screen: "Home",
+                      user: user.uid,
+                    });
+                  }
                 }
               );
             })

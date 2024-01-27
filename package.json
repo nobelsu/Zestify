@@ -26,6 +26,7 @@
     "react-native-progress": "^5.0.1",
     "react-native-qrcode-svg": "^6.2.0",
     "react-native-reanimated-carousel": "^3.5.1",
+    "react-native-select-dropdown": "^3.4.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-swipe-list-view": "^3.2.9",
     "react-native-web": "~0.19.6",

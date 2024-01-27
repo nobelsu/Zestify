@@ -19,7 +19,18 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import { useNavigation } from "@react-navigation/native";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  onSnapshot,
+  deleteDoc,
+} from "firebase/firestore";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Splash() {
@@ -27,15 +38,27 @@ export default function Splash() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigation.navigate("TabNav", {
-          screen: "Home",
-          user: user.uid,
-        });
+        async function Temp() {
+          const docRef = doc(db, "users", user);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.type) {
+            navigation.navigate("TabNav2", {
+              screen: "Store",
+              user: user.uid,
+            });
+          } else {
+            navigation.navigate("TabNav", {
+              screen: "Home",
+              user: user.uid,
+            });
+          }
+        }
+        Temp();
       } else {
         navigation.navigate("Login");
       }
     });
-  });
+  }, []);
   return (
     <View style={{ width: "100%", height: "100%" }}>
       <Text>Splash</Text>
