@@ -113,7 +113,7 @@ export default function Store({ route }) {
               }}
               numberOfLines={1}
             >
-              {data.collectionStart} - {data.collectionEnd}
+              {data.collectionTime}
             </Text>
           </View>
           <View
@@ -226,6 +226,7 @@ export default function Store({ route }) {
                 storeName: storeSnap.data().name,
                 user: route.params.user,
                 status: 0,
+                price: data.price * pur,
               });
               await updateDoc(storeRef, {
                 stock: storeSnap.data().stock - pur,
@@ -241,6 +242,7 @@ export default function Store({ route }) {
                 user: route.params.user,
                 orderID: docRef.id,
                 username: val,
+                price: data.price,
               });
               setVis(false);
             }}
@@ -448,7 +450,7 @@ export default function Store({ route }) {
                     paddingBottom: 4,
                   }}
                 >
-                  {data.loc}
+                  {data.address}
                 </Text>
               </View>
             </View>
@@ -581,14 +583,15 @@ export default function Store({ route }) {
               >
                 Ingredients & Allergens
               </Text>
-              <FlatList
-                style={{ paddingTop: 4, paddingBottom: 4, marginTop: 8 }}
-                keyExtractor={(item) => item}
-                data={data.ing}
-                renderItem={({ item }) => <Tag text={item} />}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              />
+              <Text
+                style={{
+                  textAlign: "justify",
+                  marginTop: 8,
+                  fontWeight: 200,
+                }}
+              >
+                {data.ing}
+              </Text>
 
               {/* <Text
                 style={{
@@ -599,25 +602,6 @@ export default function Store({ route }) {
               >
                 Flour, eggs, sugar
               </Text> */}
-            </View>
-            <View
-              style={{
-                backgroundColor: "white",
-                paddingTop: 4,
-                paddingBottom: 4,
-                marginTop: 8,
-                width: "100%",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: 700,
-                }}
-              >
-                Highlights
-              </Text>
-              <Badge id={0} />
             </View>
           </View>
         </View>

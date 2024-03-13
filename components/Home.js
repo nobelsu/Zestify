@@ -185,7 +185,7 @@ export default function Home() {
                   }}
                   numberOfLines={2}
                 >
-                  {item.loc}
+                  {/* {item.loc} */}
                 </Text>
               </View>
               <View
@@ -206,7 +206,7 @@ export default function Home() {
                   }}
                   numberOfLines={1}
                 >
-                  {item.collectionStart} - {item.collectionEnd}
+                  {item.collectionTime}
                 </Text>
               </View>
             </View>
@@ -334,7 +334,7 @@ export default function Home() {
               }}
               numberOfLines={1}
             >
-              {item.loc}
+              {item.address}
             </Text>
           </View>
           <View
@@ -355,7 +355,7 @@ export default function Home() {
               }}
               numberOfLines={1}
             >
-              {item.rating * 5} | {item.revcnt} sold
+              {item.rating * 5} | {item.qsold} sold
             </Text>
           </View>
           <View
@@ -376,7 +376,7 @@ export default function Home() {
               }}
               numberOfLines={1}
             >
-              {item.collectionStart} - {item.collectionEnd}
+              {item.collectionTime}
             </Text>
           </View>
         </Pressable>
@@ -476,7 +476,7 @@ export default function Home() {
               }}
               numberOfLines={1}
             >
-              {item.loc}
+              {item.address}
             </Text>
           </View>
           <View
@@ -518,7 +518,7 @@ export default function Home() {
               }}
               numberOfLines={1}
             >
-              {item.collectionStart} - {item.collectionEnd}
+              {item.collectionTime}
             </Text>
           </View>
         </Pressable>
@@ -612,7 +612,7 @@ export default function Home() {
                 }}
                 numberOfLines={1}
               >
-                {item.loc}
+                {item.address}
               </Text>
             </View>
             <View
@@ -651,7 +651,7 @@ export default function Home() {
                 }}
                 numberOfLines={1}
               >
-                {item.collectionStart} - {item.collectionEnd}
+                {item.collectionTime}
               </Text>
             </View>
           </View>

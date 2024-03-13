@@ -59,6 +59,14 @@ export default function Login() {
   const [passValid, setPassValid] = useState(true);
   const [codee, setCodee] = useState("");
 
+  useEffect(() => {
+    setEmail("");
+    setPassword("");
+    setEmailValid(true);
+    setPassValid(true);
+    setCodee("");
+  }, []);
+
   return (
     <View
       style={{
@@ -118,7 +126,9 @@ export default function Login() {
             <TextInput
               placeholder={"Type here..."}
               value={email}
-              onChangeText={(text) => setEmail(text.toLowerCase())}
+              onChangeText={(text) =>
+                setEmail(text.toLowerCase().split(" ").join("_"))
+              }
               inputMode={"email"}
               autoCapitalize="none"
               autoComplete="off"

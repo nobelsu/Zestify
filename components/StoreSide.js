@@ -16,6 +16,7 @@ import {
   Image,
   FlatList,
   Dimensions,
+  Modal,
   Keyboard,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -32,33 +33,52 @@ import {
   updateDoc,
   onSnapshot,
   deleteDoc,
+  GeoPoint,
 } from "firebase/firestore";
 import { NetworkContext } from "../exports";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 export default function StoreSide() {
   const value = useContext(NetworkContext);
   const user = value.params.user;
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
-  const [loc, setLoc] = useState("");
-  const [otime, setOtime] = useState("");
-  const [etime, setEtime] = useState("");
-  const [stock, setStock] = useState(0);
+  const [loc, setLoc] = useState({ latitude: 0, longitude: 0 });
+  const [time, setTime] = useState("");
+  const [stock, setStock] = useState("");
   const [edit, setEdit] = useState(false);
+  const [price, setPrice] = useState("");
+  const [oriprice, setOriprice] = useState("");
+  const [logo, setLogo] = useState("");
+  const [banner, setBanner] = useState("");
+  const [ing, setIng] = useState("");
   const [pressed, setPressed] = useState(false);
+  const [vis, setVis] = useState(false);
+  const [marker, setMarker] = useState({ latitude: 0, longitude: 0 });
+  const [secondPress, setSecondPress] = useState(false);
+  const [address, setAddress] = useState("");
+
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "stores", user);
       const docSnap = await getDoc(docRef);
       setName(docSnap.data().name);
       setDesc(docSnap.data().desc);
-      setLoc(docSnap.data().loc);
-      setOtime(docSnap.data().collectionStart);
-      setEtime(docSnap.data().collectionEnd);
+      // console.log(docSnap.data().loc.latitude);
+      setLoc({
+        latitude: docSnap.data().loc.latitude,
+        longitude: docSnap.data().loc.longitude,
+      });
+      setTime(docSnap.data().collection);
       setStock(docSnap.data().stock);
+      setAddress(docSnap.data().address);
+      setMarker({
+        latitude: docSnap.data().loc.latitude,
+        longitude: docSnap.data().loc.longitude,
+      });
     }
     Temp();
-  }, []);
+  }, [secondPress]);
 
   const SCWIDTH = Dimensions.get("window").width;
   return (
@@ -68,6 +88,87 @@ export default function StoreSide() {
       enabled
       keyboardVerticalOffset={50}
     >
+      <Modal transparent={true} visible={vis} animationType="fade">
+        <Pressable
+          style={{
+            height: "100%",
+            width: "100%",
+            backgroundColor: `rgba(0, 0, 0, 0.6)`,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            setVis(false);
+          }}
+        >
+          <View
+            style={{
+              height: 280,
+              width: 280,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "white",
+              borderRadius: 15,
+            }}
+          >
+            <Ionicons color={"#BF41B7"} name="alert-circle-outline" size={80} />
+            <Text
+              style={{
+                marginTop: 10,
+                marginBottom: 10,
+                fontWeight: 600,
+                fontSize: 16,
+                width: "90%",
+                textAlign: "center",
+              }}
+            >
+              Notice
+            </Text>
+            <Text style={{ width: "90%", textAlign: "center" }}>
+              Please confirm that you would like to save these changes.
+            </Text>
+
+            <Pressable
+              style={{
+                width: "90%",
+                height: 45,
+                backgroundColor: "#BF41B7",
+                marginTop: 20,
+                borderRadius: 10,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={async () => {
+                const docRef = doc(db, "stores", user);
+                try {
+                  await updateDoc(docRef, {
+                    name: name,
+                    desc: desc,
+                    loc: new GeoPoint(loc.latitude, loc.longitude),
+                    collection: time,
+                    stock: stock,
+                    price: price,
+                    oriprice: oriprice,
+                    ing: ing,
+                    banner: banner,
+                    logo: logo,
+                    address: address,
+                  });
+                } catch (error) {
+                  console.log(error);
+                }
+                setPressed(!pressed);
+                setSecondPress(!secondPress);
+                setEdit(false);
+                setVis(false);
+              }}
+            >
+              <Text style={{ color: "white" }}>Confirm</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
+
       <ScrollView>
         <Text
           style={{
@@ -156,7 +257,7 @@ export default function StoreSide() {
         </View>
         <View
           style={{
-            height: 75,
+            height: 360,
             width: "90%",
             backgroundColor: "#F5F5F5",
             borderRadius: 10,
@@ -166,9 +267,51 @@ export default function StoreSide() {
             marginLeft: "5%",
           }}
         >
-          <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: "#BF41B7",
+              marginBottom: 10,
+            }}
+          >
             LOCATION
           </Text>
+          <MapView
+            initialRegion={{
+              latitude: marker["latitude"] != 0 ? marker["latitude"] : -6.1728,
+              longitude:
+                marker["longitude"] != 0 ? marker["longitude"] : 106.8272,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            provider={PROVIDER_GOOGLE}
+            onPress={(e) => {
+              if (pressed) {
+                setMarker(e.nativeEvent.coordinate);
+                setLoc(e.nativeEvent.coordinate);
+              }
+            }}
+            style={{ height: 300, width: "100%" }}
+          >
+            {marker ? <Marker coordinate={marker} /> : <View />}
+          </MapView>
+        </View>
+        <View
+          style={{
+            height: 75,
+            width: "90%",
+            backgroundColor: "#F5F5F5",
+            borderRadius: 10,
+            padding: 15,
+            justifyContent: "center",
+            marginTop: 15,
+            marginLeft: "5%",
+          }}
+        >
+          <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
+            ADDRESS
+          </Text>
           <View
             style={{
               flexDirection: "row",
@@ -177,8 +320,8 @@ export default function StoreSide() {
           >
             <TextInput
               placeholder={"Type here..."}
-              value={loc}
-              onChangeText={(text) => setLoc(text)}
+              value={address}
+              onChangeText={(text) => setAddress(text)}
               autoCapitalize="none"
               autoComplete="off"
               editable={edit}
@@ -204,7 +347,7 @@ export default function StoreSide() {
           }}
         >
           <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
-            COLLECTION START
+            COLLECTION TIME
           </Text>
           <View
             style={{
@@ -214,8 +357,8 @@ export default function StoreSide() {
           >
             <TextInput
               placeholder={"Type here..."}
-              value={otime}
-              onChangeText={(text) => setOtime(text)}
+              value={time}
+              onChangeText={(text) => setTime(text)}
               autoCapitalize="none"
               autoComplete="off"
               editable={edit}
@@ -230,18 +373,17 @@ export default function StoreSide() {
         </View>
         <View
           style={{
-            height: 75,
+            height: 150,
             width: "90%",
             backgroundColor: "#F5F5F5",
             borderRadius: 10,
             padding: 15,
-            justifyContent: "center",
-            marginTop: 15,
+            marginTop: 10,
             marginLeft: "5%",
           }}
         >
           <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
-            COLLECTION END
+            INGREDIENTS
           </Text>
           <View
             style={{
@@ -251,16 +393,18 @@ export default function StoreSide() {
           >
             <TextInput
               placeholder={"Type here..."}
-              value={etime}
-              onChangeText={(text) => setEtime(text)}
-              autoCapitalize="none"
+              textAlign="top"
+              value={ing}
+              onChangeText={(text) => setIng(text)}
               autoComplete="off"
+              multiline={true}
               editable={edit}
               style={{
                 color: "#400235",
-                height: 25,
+                height: 100,
                 fontSize: 14,
                 width: SCWIDTH * 0.9 - 30,
+                textAlignVertical: "top",
               }}
             />
           </View>
@@ -303,6 +447,155 @@ export default function StoreSide() {
             />
           </View>
         </View>
+        <View
+          style={{
+            height: 75,
+            width: "90%",
+            backgroundColor: "#F5F5F5",
+            borderRadius: 10,
+            padding: 15,
+            justifyContent: "center",
+            marginTop: 15,
+            marginLeft: "5%",
+          }}
+        >
+          <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
+            NEW PRICE
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 5,
+            }}
+          >
+            <TextInput
+              placeholder={"Type here..."}
+              value={price}
+              onChangeText={(text) => setPrice(text)}
+              autoCapitalize="none"
+              autoComplete="off"
+              editable={edit}
+              style={{
+                color: "#400235",
+                height: 25,
+                fontSize: 14,
+                width: SCWIDTH * 0.9 - 30,
+              }}
+            />
+          </View>
+        </View>
+        <View
+          style={{
+            height: 75,
+            width: "90%",
+            backgroundColor: "#F5F5F5",
+            borderRadius: 10,
+            padding: 15,
+            justifyContent: "center",
+            marginTop: 15,
+            marginLeft: "5%",
+          }}
+        >
+          <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
+            ORIGINAL VALUE
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 5,
+            }}
+          >
+            <TextInput
+              placeholder={"Type here..."}
+              value={oriprice}
+              onChangeText={(text) => setOriprice(text)}
+              autoCapitalize="none"
+              autoComplete="off"
+              editable={edit}
+              style={{
+                color: "#400235",
+                height: 25,
+                fontSize: 14,
+                width: SCWIDTH * 0.9 - 30,
+              }}
+            />
+          </View>
+        </View>
+        <View
+          style={{
+            height: 75,
+            width: "90%",
+            backgroundColor: "#F5F5F5",
+            borderRadius: 10,
+            padding: 15,
+            justifyContent: "center",
+            marginTop: 15,
+            marginLeft: "5%",
+          }}
+        >
+          <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
+            LOGO
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 5,
+            }}
+          >
+            <TextInput
+              placeholder={"Link here..."}
+              value={logo}
+              onChangeText={(text) => setLogo(text)}
+              autoCapitalize="none"
+              autoComplete="off"
+              editable={edit}
+              style={{
+                color: "#400235",
+                height: 25,
+                fontSize: 14,
+                width: SCWIDTH * 0.9 - 30,
+              }}
+            />
+          </View>
+        </View>
+        <View
+          style={{
+            height: 75,
+            width: "90%",
+            backgroundColor: "#F5F5F5",
+            borderRadius: 10,
+            padding: 15,
+            justifyContent: "center",
+            marginTop: 15,
+            marginLeft: "5%",
+          }}
+        >
+          <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
+            BANNER
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 5,
+            }}
+          >
+            <TextInput
+              placeholder={"Link here..."}
+              value={banner}
+              onChangeText={(text) => setBanner(text)}
+              autoCapitalize="none"
+              autoComplete="off"
+              editable={edit}
+              style={{
+                color: "#400235",
+                height: 25,
+                fontSize: 14,
+                width: SCWIDTH * 0.9 - 30,
+              }}
+            />
+          </View>
+        </View>
+
         {!edit ? (
           <Pressable
             style={{
@@ -343,6 +636,7 @@ export default function StoreSide() {
               }}
               onPress={() => {
                 setEdit(false);
+                setSecondPress(!secondPress);
               }}
             >
               <Text style={{ color: "#BF41B7" }}>Cancel</Text>
@@ -360,17 +654,7 @@ export default function StoreSide() {
                 alignItems: "center",
               }}
               onPress={async () => {
-                const docRef = doc(db, "stores", user);
-                await updateDoc(docRef, {
-                  name: name,
-                  desc: desc,
-                  loc: loc,
-                  collectionStart: otime,
-                  collectionEnd: etime,
-                  stock: stock,
-                });
-                setPressed(!pressed);
-                setEdit(false);
+                setVis(true);
               }}
             >
               <Text style={{ color: "white" }}>Save</Text>

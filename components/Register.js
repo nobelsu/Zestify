@@ -20,7 +20,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { GeoPoint, doc, setDoc } from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -118,7 +118,9 @@ export default function Register() {
             <TextInput
               placeholder={"Type here..."}
               value={email}
-              onChangeText={(text) => setEmail(text.toLowerCase())}
+              onChangeText={(text) =>
+                setEmail(text.toLowerCase().split(" ").join("_"))
+              }
               inputMode={"email"}
               autoCapitalize="none"
               autoComplete="off"
@@ -290,18 +292,17 @@ export default function Register() {
                   if (typee) {
                     setDoc(doc(db, "stores", user.uid), {
                       awards: [],
-                      banner: "",
-                      collectionEnd: "",
-                      collectionStart: "",
-                      desc: "",
-                      ing: [],
-                      loc: "",
-                      logo: "",
-                      name: "",
+                      banner: "https://placehold.co/1920x1080/png",
+                      collection: "Start Time - End Time",
+                      desc: "This is a description of my store.",
+                      ing: "Avocado, Banana, Carrot",
+                      loc: new GeoPoint(0, 0),
+                      logo: "https://placehold.co/1080x1080/png",
+                      name: "My store",
                       new: true,
                       orders: [],
-                      oriprice: "",
-                      price: "",
+                      oriprice: "Rp. 99,999",
+                      price: "Rp. 9,999",
                       promo: false,
                       rating: 0,
                       revcnt: 0,
@@ -310,6 +311,8 @@ export default function Register() {
                       tags: [],
                       today: true,
                       tomorrow: false,
+                      address: "My address",
+                      qsold: 0,
                     });
                     navigation.navigate("TabNav2", {
                       screen: "Store",

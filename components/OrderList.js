@@ -38,7 +38,7 @@ import { NetworkContext } from "../exports";
 const ini = [
   { val: "Pending", color: "black" },
   { val: "Cancelled", color: "red" },
-  { val: "Claimed", color: "purple" },
+  { val: "Claimed", color: "#BF41B7" },
 ];
 
 const SCWIDTH = Dimensions.get("window").width;
@@ -51,6 +51,7 @@ export default function OrderList() {
   const [focused, setFocused] = useState(false);
   const [val, setVal] = useState("");
   const [name, setName] = useState("");
+  const [pressed, setPressed] = useState(true);
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "users", user);
@@ -58,7 +59,6 @@ export default function OrderList() {
       setName(docSnap.data().name);
       const ref = collection(db, "stores");
       const q = query(ref, where("name", "!=", ""));
-
       const orderRef = collection(db, "orders");
       const orderSnap = query(orderRef, where("user", "==", user));
       onSnapshot(orderSnap, (querySnapshot) => {
@@ -70,7 +70,7 @@ export default function OrderList() {
       });
     }
     Temp();
-  }, []);
+  }, [pressed]);
 
   return (
     <View style={{ height: "100%", width: "100%" }}>
@@ -121,8 +121,12 @@ export default function OrderList() {
             setFocused(true);
           }}
         />
-        <Pressable>
-          <Ionicons name="options-outline" size={25} />
+        <Pressable
+          onPress={() => {
+            setPressed(!pressed);
+          }}
+        >
+          <Ionicons name="refresh-outline" size={25} />
         </Pressable>
       </View>
       <Text
@@ -258,6 +262,8 @@ export default function OrderList() {
                     await updateDoc(orderRef, {
                       status: 1,
                     });
+
+                    rowMap[data.item.key].closeRow();
                   } else {
                     const ref = doc(db, "users", user);
                     const snap = await getDoc(ref);

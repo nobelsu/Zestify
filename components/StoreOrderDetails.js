@@ -20,6 +20,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
+import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
 import { db } from "../firebase";
 import {
   collection,
@@ -30,18 +31,33 @@ import {
   getDoc,
   updateDoc,
   onSnapshot,
+  deleteDoc,
 } from "firebase/firestore";
 import { NetworkContext } from "../exports";
-import QRCode from "react-native-qrcode-svg";
+import { Camera, CameraType } from "expo-camera";
 
-const SCWIDTH = Dimensions.get("window").width;
-
-export default function Reserve({ route }) {
+export default function StoreOrderDetails({ route }) {
   const navigation = useNavigation();
-  // const value = useContext(NetworkContext);
-  // const user = value.params.user;
+  const [data, setData] = useState({});
+  const [dataStore, setStore] = useState({});
+  const [dataUser, setUser] = useState({});
+
   useEffect(() => {
-    console.log(route);
+    async function Temp() {
+      const docRef = doc(db, "orders", route.params.orderID);
+      const docSnap = await getDoc(docRef);
+      const storeid = docSnap.data().store;
+      const userid = docSnap.data().user;
+      const docRef2 = doc(db, "users", userid);
+      const docRef3 = doc(db, "stores", storeid);
+      const docSnap2 = await getDoc(docRef2);
+      const docSnap3 = await getDoc(docRef3);
+
+      setData({ ...docSnap.data() });
+      setStore({ ...docSnap3.data() });
+      setUser({ ...docSnap2.data() });
+    }
+    Temp();
   }, []);
   return (
     <ScrollView style={{ height: "100%", width: "100%" }}>
@@ -54,8 +70,8 @@ export default function Reserve({ route }) {
         >
           <Pressable
             onPress={() => {
-              navigation.navigate("TabNav", {
-                screen: "Orders",
+              navigation.navigate("TabNav2", {
+                screen: "Camera",
               });
             }}
           >
@@ -96,18 +112,18 @@ export default function Reserve({ route }) {
         }}
       >
         <Text style={{ fontSize: 20, fontWeight: 600, marginBottom: 20 }}>
-          {route.params.name}
+          {dataStore.name}
         </Text>
         <View style={{ flexDirection: "row", width: "90%", marginBottom: 10 }}>
           <Text style={{ flex: 1, fontWeight: 600 }}>Collection time</Text>
           <Text style={{ flex: 1, textAlign: "right" }}>
-            {route.params.collectionTime}
+            {dataStore.collectionTime}
           </Text>
         </View>
         <View style={{ flexDirection: "row", width: "90%", marginBottom: 20 }}>
           <Text style={{ flex: 1, fontWeight: 600 }}>Location</Text>
           <Text style={{ flex: 1, textAlign: "right" }}>
-            {route.params.address}
+            {dataStore.address}
           </Text>
         </View>
         <View
@@ -122,7 +138,7 @@ export default function Reserve({ route }) {
         >
           <Text>
             <Text style={{ color: "#BF41B7", fontWeight: 600 }}>
-              {route.params.username}
+              {dataUser.name}
             </Text>{" "}
             has purchased
           </Text>
@@ -134,7 +150,7 @@ export default function Reserve({ route }) {
               fontWeight: 900,
             }}
           >
-            {route.params.pur}
+            {data.quantity}
           </Text>
           <Text>mystery boxes!</Text>
         </View>
@@ -143,35 +159,37 @@ export default function Reserve({ route }) {
             <Text>Total</Text>
           </View>
           <View style={{ flex: 1, alignItems: "flex-end" }}>
-            <Text>${(route.params.price * route.params.pur).toFixed(2)}</Text>
+            <Text>${data.price}</Text>
           </View>
         </View>
-        <Text
-          style={{
-            marginTop: 15,
-            marginBottom: 15,
-            width: "65%",
-            textAlign: "center",
-          }}
-        >
-          Remember to show the{" "}
-          <Text style={{ fontWeight: 600, color: "#BF41B7" }}>QR code</Text>{" "}
-          during collection!
-        </Text>
-
-        <QRCode value={route.params.orderID} size={SCWIDTH * 0.65} />
-        <Text
-          style={{
-            textAlign: "center",
-            width: "90%",
-            fontStyle: "italic",
-            fontSize: 12,
-            marginTop: 10,
-          }}
-        >
-          ID: {route.params.orderID}
-        </Text>
       </View>
+      <Pressable
+        style={{
+          width: "90%",
+          backgroundColor: "#BF41B7",
+          height: 50,
+          marginLeft: "5%",
+          borderRadius: 15,
+          marginTop: 20,
+          marginBottom: 20,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        onPress={async () => {
+          const docRef = doc(db, "orders", route.params.orderID);
+          const docRef2 = doc(db, "stores", storeid);
+          const docSnap = await getDoc(docRef2);
+          await updateDoc(docRef, { status: 2 });
+          await updateDoc(docRef2, {
+            qsold: docSnap.data().qsold + data.quantity,
+          });
+          navigation.navigate("TabNav2", {
+            screen: "Camera",
+          });
+        }}
+      >
+        <Text style={{ color: "white" }}>Confirm</Text>
+      </Pressable>
     </ScrollView>
   );
 }

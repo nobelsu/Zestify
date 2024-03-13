@@ -38,12 +38,12 @@ import { NetworkContext } from "../exports";
 const ini = [
   { val: "Pending", color: "black" },
   { val: "Cancelled", color: "red" },
-  { val: "Claimed", color: "purple" },
+  { val: "Claimed", color: "#BF41B7" },
 ];
 
 const SCWIDTH = Dimensions.get("window").width;
 
-export default function OrderList() {
+export default function OrderStore() {
   const value = useContext(NetworkContext);
   const user = value.params.user;
   const navigation = useNavigation();
@@ -51,16 +51,16 @@ export default function OrderList() {
   const [focused, setFocused] = useState(false);
   const [val, setVal] = useState("");
   const [name, setName] = useState("");
+  const [pressed, setPressed] = useState(true);
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "stores", user);
       const docSnap = await getDoc(docRef);
       setName(docSnap.data().name);
       const ref = collection(db, "stores");
-      const q = query(ref, where("name", "!=", ""));
 
       const orderRef = collection(db, "orders");
-      const orderSnap = query(orderRef, where("user", "==", user));
+      const orderSnap = query(orderRef, where("store", "==", user));
       onSnapshot(orderSnap, (querySnapshot) => {
         setOrders(
           querySnapshot.docs.map((doc) => {
@@ -70,7 +70,7 @@ export default function OrderList() {
       });
     }
     Temp();
-  }, []);
+  }, [pressed]);
 
   return (
     <View style={{ height: "100%", width: "100%" }}>
@@ -121,8 +121,12 @@ export default function OrderList() {
             setFocused(true);
           }}
         />
-        <Pressable>
-          <Ionicons name="options-outline" size={25} />
+        <Pressable
+          onPress={() => {
+            setPressed(!pressed);
+          }}
+        >
+          <Ionicons name="refresh-outline" size={25} />
         </Pressable>
       </View>
       <Text
@@ -156,13 +160,15 @@ export default function OrderList() {
               <Pressable
                 onPress={async () => {
                   const docRef = doc(db, "stores", data.item.store);
+                  const docRef2 = doc(db, "users", data.item.user);
                   const docSnap = await getDoc(docRef);
-                  navigation.navigate("Reserve", {
+                  const docSnap2 = await getDoc(docRef2);
+                  navigation.navigate("StoreOrderDetails", {
                     ...docSnap.data(),
                     user: user,
                     store: data.item.store,
                     orderID: data.item.id,
-                    username: name,
+                    username: docSnap2.data().name,
                     pur: data.item.quantity,
                   });
                 }}
@@ -258,8 +264,9 @@ export default function OrderList() {
                     await updateDoc(orderRef, {
                       status: 1,
                     });
+                    rowMap[data.item.key].closeRow();
                   } else {
-                    const ref = doc(db, "users", user);
+                    const ref = doc(db, "stores", data.item.store);
                     const snap = await getDoc(ref);
                     const ori = snap.data()["orders"];
                     ori.splice(ori.indexOf(data.item.id), 1);

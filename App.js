@@ -17,6 +17,10 @@ import { NetworkContext } from "./exports";
 import Reserve from "./components/Reserve";
 import OrderList from "./components/OrderList";
 import StoreSide from "./components/StoreSide";
+import StoreCamera from "./components/StoreCamera";
+import StoreOrderDetails from "./components/StoreOrderDetails";
+import OrderStore from "./components/OrderStore";
+import Settings from "./components/Settings";
 
 export default function App() {
   return (
@@ -46,9 +50,26 @@ export default function App() {
             return (
               <NetworkContext.Provider value={route}>
                 <Tab.Navigator screenOptions={{ headerShown: false }}>
-                  <Tab.Screen name="Home" component={Home} />
-                  <Tab.Screen name="Favourites" component={Favourites} />
-                  <Tab.Screen name="Orders" component={OrderList} />
+                  <Tab.Screen
+                    name="Home"
+                    component={Home}
+                    screenOptions={{ gestureEnabled: false }}
+                  />
+                  <Tab.Screen
+                    name="Favourites"
+                    component={Favourites}
+                    screenOptions={{ gestureEnabled: false }}
+                  />
+                  <Tab.Screen
+                    name="Orders"
+                    component={OrderList}
+                    screenOptions={{ gestureEnabled: false }}
+                  />
+                  <Tab.Screen
+                    name="Settings"
+                    component={Settings}
+                    screenOptions={{ gestureEnabled: false }}
+                  />
                 </Tab.Navigator>
               </NetworkContext.Provider>
             );
@@ -61,21 +82,46 @@ export default function App() {
             return (
               <NetworkContext.Provider value={route}>
                 <Tab2.Navigator screenOptions={{ headerShown: false }}>
-                  <Tab2.Screen name="Store" component={StoreSide} />
+                  <Tab2.Screen
+                    name="StoreSide"
+                    component={StoreSide}
+                    screenOptions={{ gestureEnabled: false }}
+                  />
+                  <Tab2.Screen
+                    name="Camera"
+                    component={StoreCamera}
+                    screenOptions={{ gestureEnabled: false }}
+                  />
+                  <Tab2.Screen
+                    name="StoreOrder"
+                    component={OrderStore}
+                    screenOptions={{ gestureEnabled: false }}
+                  />
+                  <Tab2.Screen
+                    name="Settings"
+                    component={Settings}
+                    screenOptions={{ gestureEnabled: false }}
+                  />
                 </Tab2.Navigator>
               </NetworkContext.Provider>
             );
           }}
+          screenOptions={{ gestureEnabled: false }}
         />
         <Stack.Screen
           name="Store"
           component={Store}
-          screenOptions={{ gestureEnabled: true }}
+          screenOptions={{ gestureEnabled: false }}
         />
         <Stack.Screen
           name="Reserve"
           component={Reserve}
-          screenOptions={{ gestureEnabled: true }}
+          screenOptions={{ gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="StoreOrderDetails"
+          component={StoreOrderDetails}
+          screenOptions={{ gestureEnabled: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
