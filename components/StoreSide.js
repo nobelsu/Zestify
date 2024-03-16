@@ -35,12 +35,13 @@ import {
   deleteDoc,
   GeoPoint,
 } from "firebase/firestore";
-import { NetworkContext } from "../exports";
+import { NetworkContext, currencyCodes } from "../exports";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { Dropdown } from "react-native-element-dropdown";
 
 export default function StoreSide() {
   const value = useContext(NetworkContext);
-  const user = value.params.user;
+  const [user, setUser] = useState(value.params.user);
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [loc, setLoc] = useState({ latitude: 0, longitude: 0 });
@@ -57,6 +58,9 @@ export default function StoreSide() {
   const [marker, setMarker] = useState({ latitude: 0, longitude: 0 });
   const [secondPress, setSecondPress] = useState(false);
   const [address, setAddress] = useState("");
+  const [currency, setCurrency] = useState("");
+  const [valoo, setValoo] = useState(null);
+  const [isFocus, setIsFocus] = useState(false);
 
   useEffect(() => {
     async function Temp() {
@@ -70,12 +74,18 @@ export default function StoreSide() {
         longitude: docSnap.data().loc.longitude,
       });
       setTime(docSnap.data().collection);
-      setStock(docSnap.data().stock);
+      setStock(String(docSnap.data().stock));
       setAddress(docSnap.data().address);
       setMarker({
         latitude: docSnap.data().loc.latitude,
         longitude: docSnap.data().loc.longitude,
       });
+      setIng(docSnap.data().ing);
+      setLogo(docSnap.data().logo);
+      setBanner(docSnap.data().banner);
+      setOriprice(String(docSnap.data().oriprice));
+      setPrice(String(docSnap.data().price));
+      setCurrency(docSnap.data().currency);
     }
     Temp();
   }, [secondPress]);
@@ -146,13 +156,14 @@ export default function StoreSide() {
                     desc: desc,
                     loc: new GeoPoint(loc.latitude, loc.longitude),
                     collection: time,
-                    stock: stock,
-                    price: price,
-                    oriprice: oriprice,
+                    stock: Number(stock),
+                    price: Number(price),
+                    oriprice: Number(oriprice),
                     ing: ing,
                     banner: banner,
                     logo: logo,
                     address: address,
+                    currency: currency,
                   });
                 } catch (error) {
                   console.log(error);
@@ -447,6 +458,65 @@ export default function StoreSide() {
             />
           </View>
         </View>
+
+        <View
+          style={{
+            height: 75,
+            width: "90%",
+            backgroundColor: "#F5F5F5",
+            borderRadius: 10,
+            padding: 15,
+            justifyContent: "center",
+            marginTop: 15,
+            marginLeft: "5%",
+          }}
+        >
+          <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
+            CURRENCY
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 5,
+            }}
+          >
+            {edit ? (
+              <Dropdown
+                style={{
+                  width: SCWIDTH * 0.9 - 30,
+                  height: 25,
+                }}
+                data={currencyCodes.map((item, index) => {
+                  return { label: item, value: item };
+                })}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder={!isFocus ? "Select item" : "..."}
+                searchPlaceholder="Search..."
+                value={currency}
+                onFocus={() => setIsFocus(true)}
+                onBlur={() => setIsFocus(false)}
+                onChange={(item) => {
+                  setCurrency(item.value);
+                  setIsFocus(false);
+                }}
+                selectedTextStyle={{ fontSize: 14 }}
+              />
+            ) : (
+              <Text
+                style={{
+                  height: 25,
+                  fontSize: 14,
+                  width: SCWIDTH * 0.9 - 30,
+                }}
+              >
+                {currency}
+              </Text>
+            )}
+          </View>
+        </View>
         <View
           style={{
             height: 75,
@@ -472,6 +542,7 @@ export default function StoreSide() {
               placeholder={"Type here..."}
               value={price}
               onChangeText={(text) => setPrice(text)}
+              keyboardType="numeric"
               autoCapitalize="none"
               autoComplete="off"
               editable={edit}
@@ -509,6 +580,7 @@ export default function StoreSide() {
               placeholder={"Type here..."}
               value={oriprice}
               onChangeText={(text) => setOriprice(text)}
+              keyboardType="numeric"
               autoCapitalize="none"
               autoComplete="off"
               editable={edit}
@@ -611,6 +683,7 @@ export default function StoreSide() {
             }}
             onPress={() => {
               setEdit(true);
+              setPressed(true);
             }}
           >
             <Text style={{ color: "white" }}>Edit</Text>

@@ -28,6 +28,7 @@ import {
 import { db } from "../firebase";
 import SelectDropdown from "react-native-select-dropdown";
 const SCWIDTH = Dimensions.get("window").width;
+import { Dropdown } from "react-native-element-dropdown";
 
 const codes = {
   "auth/email-already-in-use": {
@@ -60,6 +61,7 @@ export default function Register() {
   const [passValid, setPassValid] = useState(true);
   const [codee, setCodee] = useState("");
   const [typee, setTypee] = useState(0);
+  const [isFocus, setIsFocus] = useState(false);
   return (
     <View
       style={{
@@ -116,6 +118,7 @@ export default function Register() {
               style={{ color: "#400235", marginRight: 10, marginTop: 3 }}
             />
             <TextInput
+              textContentType="oneTimeCode"
               placeholder={"Type here..."}
               value={email}
               onChangeText={(text) =>
@@ -200,41 +203,47 @@ export default function Register() {
             />
           </View>
         </View>
-        <SelectDropdown
-          data={["Customer", "Store"]}
-          onSelect={(selectedItem, index) => {
-            setTypee(index);
-          }}
-          buttonTextAfterSelection={(selectedItem, index) => {
-            // text represented after item is selected
-            // if data array is an array of objects then return selectedItem.property to render after item is selected
-            return selectedItem;
-          }}
-          rowTextForSelection={(item, index) => {
-            // text represented for each item in dropdown
-            // if data array is an array of objects then return item.property to represent item in dropdown
-            return item;
-          }}
-          defaultButtonText="Select type..."
-          buttonStyle={{
-            borderRadius: 15,
-            backgroundColor: "#BF41B7",
-            marginTop: 15,
+        <View
+          style={{
+            height: 75,
             width: "100%",
+            backgroundColor: "#F5F5F5",
+            borderRadius: 10,
+            padding: 15,
+            justifyContent: "center",
+            marginTop: 15,
           }}
-          buttonTextStyle={{ color: "white" }}
-          renderDropdownIcon={() => {
-            return (
-              <View style={{ marginRight: 20, marginLeft: -40 }}>
-                <Ionicons
-                  name="chevron-down-outline"
-                  size={20}
-                  style={{ color: "white" }}
-                />
-              </View>
-            );
-          }}
-        />
+        >
+          <Text style={{ fontSize: 12, fontWeight: 700, color: "#BF41B7" }}>
+            ACCOUNT TYPE
+          </Text>
+          <View style={{ flexDirection: "row", marginTop: 5 }}>
+            <Dropdown
+              style={{
+                width: SCWIDTH * 0.9 - 30,
+                height: 25,
+              }}
+              data={[
+                { label: "Customer", value: 0 },
+                { label: "Store", value: 1 },
+              ]}
+              search
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder={!isFocus ? "Select item" : "..."}
+              searchPlaceholder="Search..."
+              value={typee}
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+              onChange={(item) => {
+                setTypee(item.value);
+                setIsFocus(false);
+              }}
+              selectedTextStyle={{ fontSize: 14 }}
+            />
+          </View>
+        </View>
 
         <View>
           {!passValid ? (
@@ -296,7 +305,7 @@ export default function Register() {
                       collection: "Start Time - End Time",
                       desc: "This is a description of my store.",
                       ing: "Avocado, Banana, Carrot",
-                      loc: new GeoPoint(0, 0),
+                      loc: new GeoPoint(-6.1728, 106.8272),
                       logo: "https://placehold.co/1080x1080/png",
                       name: "My store",
                       new: true,
@@ -313,6 +322,7 @@ export default function Register() {
                       tomorrow: false,
                       address: "My address",
                       qsold: 0,
+                      email: email,
                     });
                     navigation.navigate("TabNav2", {
                       screen: "Store",
@@ -322,13 +332,11 @@ export default function Register() {
                     setDoc(doc(db, "users", user.uid), {
                       orders: [],
                       fav: [],
-                      name: "Temp",
+                      name: "",
                       type: typee,
+                      email: email,
                     });
-                    navigation.navigate("TabNav", {
-                      screen: "Home",
-                      user: user.uid,
-                    });
+                    navigation.navigate("Name", { user: user.uid });
                   }
                 }
               );

@@ -125,6 +125,7 @@ export default function Login() {
             />
             <TextInput
               placeholder={"Type here..."}
+              textContentType="oneTimeCode"
               value={email}
               onChangeText={(text) =>
                 setEmail(text.toLowerCase().split(" ").join("_"))
@@ -267,10 +268,14 @@ export default function Login() {
                     user: user.uid,
                   });
                 } else {
-                  navigation.navigate("TabNav", {
-                    screen: "Home",
-                    user: user.uid,
-                  });
+                  if (docSnap.data().name == "") {
+                    navigation.navigate("Name", { user: user.uid });
+                  } else {
+                    navigation.navigate("TabNav", {
+                      screen: "Home",
+                      user: user.uid,
+                    });
+                  }
                 }
               }
               Temp();

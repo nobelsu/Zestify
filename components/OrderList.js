@@ -33,7 +33,8 @@ import {
   onSnapshot,
   deleteDoc,
 } from "firebase/firestore";
-import { NetworkContext } from "../exports";
+import { NetworkContext, days, months } from "../exports";
+import { documentId } from "firebase/firestore";
 
 const ini = [
   { val: "Pending", color: "black" },
@@ -45,7 +46,7 @@ const SCWIDTH = Dimensions.get("window").width;
 
 export default function OrderList() {
   const value = useContext(NetworkContext);
-  const user = value.params.user;
+  const [user, setUser] = useState(value.params.user);
   const navigation = useNavigation();
   const [orders, setOrders] = useState([]);
   const [focused, setFocused] = useState(false);
@@ -60,7 +61,10 @@ export default function OrderList() {
       const ref = collection(db, "stores");
       const q = query(ref, where("name", "!=", ""));
       const orderRef = collection(db, "orders");
-      const orderSnap = query(orderRef, where("user", "==", user));
+      const orderSnap = query(
+        orderRef,
+        where(documentId(), "in", [...docSnap.data().orders, "heh"])
+      );
       onSnapshot(orderSnap, (querySnapshot) => {
         setOrders(
           querySnapshot.docs.map((doc) => {
@@ -71,6 +75,26 @@ export default function OrderList() {
     }
     Temp();
   }, [pressed]);
+  useEffect(() => {
+    const ref = collection(db, "orders");
+    const qsearch = query(ref, where("user", "==", user));
+    async function Temp() {
+      onSnapshot(qsearch, (querySnapshot) => {
+        const dat = querySnapshot.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        });
+        setOrders(
+          dat.filter((d) => {
+            return d.storeName
+              .toString()
+              .toLowerCase()
+              .includes(val.toLowerCase());
+          })
+        );
+      });
+    }
+    Temp();
+  }, [val]);
 
   return (
     <View style={{ height: "100%", width: "100%" }}>
@@ -121,14 +145,8 @@ export default function OrderList() {
             setFocused(true);
           }}
         />
-        <Pressable
-          onPress={() => {
-            setPressed(!pressed);
-          }}
-        >
-          <Ionicons name="refresh-outline" size={25} />
-        </Pressable>
       </View>
+
       <Text
         style={{
           marginLeft: "5%",
@@ -142,11 +160,12 @@ export default function OrderList() {
       </Text>
       <SwipeListView
         data={orders}
+        keyExtractor={(item) => item.id}
         renderItem={(data, rowMap) => {
           return (
             <View
               style={{
-                height: 110,
+                height: 130,
                 width: SCWIDTH * 0.9,
                 marginLeft: SCWIDTH * 0.05,
                 backgroundColor: "white",
@@ -168,6 +187,11 @@ export default function OrderList() {
                     orderID: data.item.id,
                     username: name,
                     pur: data.item.quantity,
+                    date: `${days[data.item.date.day]}, ${
+                      data.item.date.date
+                    } ${months[data.item.date.month - 1]} ${
+                      data.item.date.year
+                    }`,
                   });
                 }}
                 style={{
@@ -179,9 +203,22 @@ export default function OrderList() {
               >
                 <View
                   style={{
+                    height: "30%",
+                    width: "90%",
+                    // backgroundColor: "red",
+                    justifyContent: "center",
+                    borderBottomWidth: 0.2,
+                  }}
+                >
+                  <Text>{`${days[data.item.date.day]}, ${data.item.date.date} ${
+                    months[data.item.date.month - 1]
+                  } ${data.item.date.year}`}</Text>
+                </View>
+                <View
+                  style={{
                     flexDirection: "row",
                     width: "90%",
-                    height: "90%",
+                    height: "60%",
                   }}
                 >
                   <View style={{ flex: 2, justifyContent: "center" }}>
@@ -262,22 +299,14 @@ export default function OrderList() {
                     await updateDoc(orderRef, {
                       status: 1,
                     });
-
-                    rowMap[data.item.key].closeRow();
+                    await rowMap[data.item.id].closeRow();
                   } else {
                     const ref = doc(db, "users", user);
                     const snap = await getDoc(ref);
                     const ori = snap.data()["orders"];
                     ori.splice(ori.indexOf(data.item.id), 1);
                     await updateDoc(ref, { orders: ori });
-
-                    const ref2 = doc(db, "stores", data.item.store);
-                    const snap2 = await getDoc(ref2);
-                    const ori2 = snap2.data()["orders"];
-                    ori2.splice(ori2.indexOf(data.item.id), 1);
-                    await updateDoc(ref2, { orders: ori2 });
-
-                    await deleteDoc(doc(db, "orders", data.item.id));
+                    setPressed(!pressed);
                   }
                 }}
               >

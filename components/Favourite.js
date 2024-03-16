@@ -35,6 +35,8 @@ import {
   addDoc,
 } from "firebase/firestore";
 import { NetworkContext } from "../exports";
+import Slider from "./Slider";
+import { days, months } from "../exports";
 
 const SCWIDTH = Dimensions.get("window").width;
 const SCHEIGHT = Dimensions.get("window").height;
@@ -53,6 +55,8 @@ export default function Favourites() {
   const navigation = useNavigation();
   const [focused, setFocused] = useState(false);
   const [valoo, setValoo] = useState("");
+  const [disabled, setDisabled] = useState(false);
+  const [tag, setTag] = useState(true);
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "users", user);
@@ -82,7 +86,7 @@ export default function Favourites() {
       <Modal transparent={true} visible={vis} animationType="fade">
         <Pressable
           style={{
-            height: SCHEIGHT - 370,
+            height: SCHEIGHT - 480,
             width: "100%",
             justifyContent: "flex-end",
             backgroundColor: `rgba(0, 0, 0, 0.6)`,
@@ -96,7 +100,7 @@ export default function Favourites() {
           style={{
             backgroundColor: "white",
             width: "100%",
-            height: 370,
+            height: 480,
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -130,7 +134,7 @@ export default function Favourites() {
               }}
               numberOfLines={1}
             >
-              {purchData.collectionStart} - {purchData.collectionEnd}
+              {purchData.collection}
             </Text>
           </View>
           <View
@@ -213,10 +217,27 @@ export default function Favourites() {
               <Text>Total</Text>
             </View>
             <View style={{ flex: 1, alignItems: "flex-end" }}>
-              <Text>${(purchData.price * pur).toFixed(2)}</Text>
+              <Text>
+                {new Intl.NumberFormat("en-us", {
+                  style: "currency",
+                  currency: !purchData.currency ? "IDR" : purchData.currency,
+                }).format(purchData.price * pur)}
+              </Text>
             </View>
           </View>
+          <View style={{ marginTop: 50 }}>
+            <Slider
+              height={50}
+              width={SCWIDTH * 0.9}
+              left="Today"
+              right="Tomorrow"
+              color="#BF41B7"
+              tag={tag}
+              setTag={setTag}
+            />
+          </View>
           <Pressable
+            disabled={disabled}
             style={{
               width: "90%",
               backgroundColor: "#BF41B7",
@@ -229,6 +250,11 @@ export default function Favourites() {
               marginBottom: 10,
             }}
             onPress={async () => {
+              setDisabled(true);
+              const curdate = new Date();
+              if (!tag) {
+                curdate.setDate(curdate.getDate() + 1);
+              }
               const storeRef = doc(db, "stores", purchData.id);
               const userRef = doc(db, "users", user);
               const storeSnap = await getDoc(storeRef);
@@ -240,11 +266,20 @@ export default function Favourites() {
                 return;
               }
               const docRef = await addDoc(collection(db, "orders"), {
+                price: pur * storeSnap.data().price,
                 quantity: pur,
                 store: purchData.id,
                 user: user,
                 status: 0,
                 storeName: storeSnap.data().name,
+                date: {
+                  day: curdate.getDay(),
+                  date: curdate.getDate(),
+                  month: curdate.getMonth() + 1,
+                  year: curdate.getFullYear(),
+                },
+                userName: userSnap.data().name,
+                reviewed: false,
               });
               await updateDoc(storeRef, {
                 stock: storeSnap.data().stock - pur,
@@ -259,9 +294,13 @@ export default function Favourites() {
                 user: user,
                 orderID: docRef.id,
                 username: valoo,
+                date: `${days[curdate.getDay()]}, ${curdate.getDate()} ${
+                  months[curdate.getMonth()]
+                } ${curdate.getFullYear()}`,
               });
               setPur(1);
               setVis(false);
+              setDisabled(false);
             }}
           >
             <Text style={{ color: "white", fontSize: 14 }}>Confirm</Text>
@@ -358,9 +397,6 @@ export default function Favourites() {
             setFocused(true);
           }}
         />
-        <Pressable>
-          <Ionicons name="options-outline" size={25} />
-        </Pressable>
       </View>
       <Text
         style={{

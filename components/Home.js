@@ -43,13 +43,13 @@ export default function Home() {
   const [focused, setFocused] = useState(false);
   const [searchVal, setSearchVal] = useState("");
   const [dataSearch, setDataSearch] = useState([]);
-
-  const user = value.params.user;
+  const [user, setUser] = useState(value.params.user);
 
   useEffect(() => {
     const ref = collection(db, "stores");
     const qnew = query(ref, where("new", "==", true));
     const qpromo = query(ref, where("promo", "==", true));
+
     async function Temp() {
       onSnapshot(qnew, (querySnapshot) => {
         const dat = querySnapshot.docs.map((doc) => {
@@ -185,7 +185,7 @@ export default function Home() {
                   }}
                   numberOfLines={2}
                 >
-                  {/* {item.loc} */}
+                  {item.address}
                 </Text>
               </View>
               <View
@@ -206,36 +206,42 @@ export default function Home() {
                   }}
                   numberOfLines={1}
                 >
-                  {item.collectionTime}
+                  {item.collection}
                 </Text>
               </View>
             </View>
             <View
               style={{
-                flex: 1.2,
+                flex: 2,
                 justifyContent: "center",
               }}
             >
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 11,
                   textDecorationLine: "line-through",
                   textDecorationStyle: "solid",
                   color: "grey",
-                  marginLeft: 20,
+                  marginLeft: 5,
                 }}
               >
-                ${item.oriprice}
+                {new Intl.NumberFormat("en-us", {
+                  style: "currency",
+                  currency: item.currency,
+                }).format(item.oriprice)}
               </Text>
               <Text
                 style={{
-                  fontSize: 23,
+                  fontSize: 18,
                   fontWeight: 700,
                   marginTop: "1%",
-                  marginLeft: 20,
+                  marginLeft: 5,
                 }}
               >
-                ${item.price}
+                {new Intl.NumberFormat("en-us", {
+                  style: "currency",
+                  currency: item.currency,
+                }).format(item.price)}
               </Text>
             </View>
           </View>
@@ -288,7 +294,7 @@ export default function Home() {
           <Text
             style={{
               marginTop: SCWIDTH * 0.1,
-              width: "80%",
+              width: "90%",
               textAlign: "center",
               fontWeight: 400,
               fontSize: 14,
@@ -299,17 +305,23 @@ export default function Home() {
           </Text>
           <Text
             style={{
-              fontSize: 12,
+              fontSize: 11,
               marginTop: "4%",
               textDecorationLine: "line-through",
               textDecorationStyle: "solid",
               color: "grey",
             }}
           >
-            ${item.oriprice}
+            {new Intl.NumberFormat("en-us", {
+              style: "currency",
+              currency: item.currency,
+            }).format(item.oriprice)}
           </Text>
-          <Text style={{ fontSize: 18, fontWeight: 700, marginTop: "1%" }}>
-            ${item.price}
+          <Text style={{ fontSize: 13, fontWeight: 700, marginTop: "1%" }}>
+            {new Intl.NumberFormat("en-us", {
+              style: "currency",
+              currency: item.currency,
+            }).format(item.price)}
           </Text>
           <View
             style={{
@@ -355,7 +367,8 @@ export default function Home() {
               }}
               numberOfLines={1}
             >
-              {item.rating * 5} | {item.qsold} sold
+              {((item.rating * 5) / Math.max(1, item.revcnt)).toFixed(1)} |{" "}
+              {item.qsold} sold
             </Text>
           </View>
           <View
@@ -376,7 +389,7 @@ export default function Home() {
               }}
               numberOfLines={1}
             >
-              {item.collectionTime}
+              {item.collection}
             </Text>
           </View>
         </Pressable>
@@ -448,10 +461,16 @@ export default function Home() {
               color: "grey",
             }}
           >
-            ${item.oriprice}
+            {new Intl.NumberFormat("en-us", {
+              style: "currency",
+              currency: item.currency,
+            }).format(item.oriprice)}
           </Text>
           <Text style={{ fontSize: 18, fontWeight: 700, marginTop: "1%" }}>
-            ${item.price}
+            {new Intl.NumberFormat("en-us", {
+              style: "currency",
+              currency: item.currency,
+            }).format(item.price)}
           </Text>
           <View
             style={{
@@ -497,7 +516,8 @@ export default function Home() {
               }}
               numberOfLines={1}
             >
-              {item.rating * 5} | {item.revcnt} sold
+              {((item.rating * 5) / Math.max(1, item.revcnt)).toFixed(1)} |{" "}
+              {item.qsold} sold
             </Text>
           </View>
           <View
@@ -518,7 +538,7 @@ export default function Home() {
               }}
               numberOfLines={1}
             >
-              {item.collectionTime}
+              {item.collection}
             </Text>
           </View>
         </Pressable>
@@ -632,7 +652,8 @@ export default function Home() {
                 }}
                 numberOfLines={1}
               >
-                {item.rating * 5} | {item.revcnt} sold
+                {((item.rating * 5) / Math.max(1, item.revcnt)).toFixed(1)} |{" "}
+                {item.qsold} sold
               </Text>
             </View>
             <View
@@ -670,10 +691,16 @@ export default function Home() {
                 color: "grey",
               }}
             >
-              ${item.oriprice}
+              {new Intl.NumberFormat("en-us", {
+                style: "currency",
+                currency: item.currency,
+              }).format(item.oriprice)}
             </Text>
             <Text style={{ fontSize: 16, fontWeight: 700, marginTop: "1%" }}>
-              ${item.price}
+              {new Intl.NumberFormat("en-us", {
+                style: "currency",
+                currency: item.currency,
+              }).format(item.price)}
             </Text>
           </View>
         </Pressable>
@@ -730,9 +757,6 @@ export default function Home() {
             setFocused(true);
           }}
         />
-        <Pressable>
-          <Ionicons name="options-outline" size={25} />
-        </Pressable>
       </View>
       {!focused ? (
         <ScrollView style={{ height: "100%" }}>
@@ -924,10 +948,10 @@ export default function Home() {
             showsHorizontalScrollIndicator={false}
             data={dataPromo}
             keyExtractor={(item) => item.id}
-            style={{ marginLeft: "5%", marginTop: "3%" }}
+            style={{ marginLeft: "5%", marginTop: "3%", marginBottom: "10%" }}
             renderItem={renderSmall}
           />
-          <Text
+          {/* <Text
             style={{
               marginTop: "6%",
               fontSize: 20,
@@ -957,7 +981,7 @@ export default function Home() {
             snapToAlignment="center"
             snapToInterval={SCWIDTH}
             decelerationRate={"fast"}
-          />
+          /> */}
         </ScrollView>
       ) : (
         <View style={{ width: "100%", height: "100%" }}>

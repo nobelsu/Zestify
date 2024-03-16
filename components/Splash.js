@@ -12,9 +12,9 @@ import {
   Pressable,
   ScrollView,
   ImageBackground,
-  Image,
   FlatList,
   Dimensions,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
@@ -32,6 +32,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+import SVG from "../assets/logo.svg";
 
 export default function Splash() {
   const navigation = useNavigation();
@@ -60,8 +61,19 @@ export default function Splash() {
     });
   }, []);
   return (
-    <View style={{ width: "100%", height: "100%" }}>
-      <Text>Splash</Text>
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+        backgroundColor: "#BF41B7",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Image
+        source={require("../assets/logo.png")}
+        style={{ width: 120, height: 120 }}
+      />
     </View>
   );
 }

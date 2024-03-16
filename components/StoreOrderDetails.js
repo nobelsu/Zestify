@@ -35,21 +35,24 @@ import {
 } from "firebase/firestore";
 import { NetworkContext } from "../exports";
 import { Camera, CameraType } from "expo-camera";
+import { days, months } from "../exports";
 
 export default function StoreOrderDetails({ route }) {
   const navigation = useNavigation();
   const [data, setData] = useState({});
   const [dataStore, setStore] = useState({});
   const [dataUser, setUser] = useState({});
+  const [storeid, setStoreid] = useState("");
+  const [userid, setUserid] = useState("");
 
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "orders", route.params.orderID);
       const docSnap = await getDoc(docRef);
-      const storeid = docSnap.data().store;
-      const userid = docSnap.data().user;
-      const docRef2 = doc(db, "users", userid);
-      const docRef3 = doc(db, "stores", storeid);
+      setStoreid(docSnap.data().store);
+
+      const docRef2 = doc(db, "users", docSnap.data().user);
+      const docRef3 = doc(db, "stores", docSnap.data().store);
       const docSnap2 = await getDoc(docRef2);
       const docSnap3 = await getDoc(docRef3);
 
@@ -70,9 +73,7 @@ export default function StoreOrderDetails({ route }) {
         >
           <Pressable
             onPress={() => {
-              navigation.navigate("TabNav2", {
-                screen: "Camera",
-              });
+              navigation.goBack();
             }}
           >
             <Ionicons
@@ -115,9 +116,15 @@ export default function StoreOrderDetails({ route }) {
           {dataStore.name}
         </Text>
         <View style={{ flexDirection: "row", width: "90%", marginBottom: 10 }}>
+          <Text style={{ flex: 1, fontWeight: 600 }}>Datee</Text>
+          <Text style={{ flex: 1, textAlign: "right" }}>
+            {route.params.date}
+          </Text>
+        </View>
+        <View style={{ flexDirection: "row", width: "90%", marginBottom: 10 }}>
           <Text style={{ flex: 1, fontWeight: 600 }}>Collection time</Text>
           <Text style={{ flex: 1, textAlign: "right" }}>
-            {dataStore.collectionTime}
+            {dataStore.collection}
           </Text>
         </View>
         <View style={{ flexDirection: "row", width: "90%", marginBottom: 20 }}>
@@ -159,7 +166,12 @@ export default function StoreOrderDetails({ route }) {
             <Text>Total</Text>
           </View>
           <View style={{ flex: 1, alignItems: "flex-end" }}>
-            <Text>${data.price}</Text>
+            <Text>
+              {new Intl.NumberFormat("en-us", {
+                style: "currency",
+                currency: !dataStore.currency ? "IDR" : dataStore.currency,
+              }).format(data.price)}
+            </Text>
           </View>
         </View>
       </View>
@@ -178,10 +190,11 @@ export default function StoreOrderDetails({ route }) {
         onPress={async () => {
           const docRef = doc(db, "orders", route.params.orderID);
           const docRef2 = doc(db, "stores", storeid);
-          const docSnap = await getDoc(docRef2);
+          const docSnap = await getDoc(docRef);
+          const docSnap2 = await getDoc(docRef2);
           await updateDoc(docRef, { status: 2 });
           await updateDoc(docRef2, {
-            qsold: docSnap.data().qsold + data.quantity,
+            qsold: docSnap2.data().qsold + docSnap.data().quantity,
           });
           navigation.navigate("TabNav2", {
             screen: "Camera",

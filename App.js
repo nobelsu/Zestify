@@ -21,6 +21,14 @@ import StoreCamera from "./components/StoreCamera";
 import StoreOrderDetails from "./components/StoreOrderDetails";
 import OrderStore from "./components/OrderStore";
 import Settings from "./components/Settings";
+import Name from "./components/Name";
+import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  MaterialCommunityIcons,
+  Feather,
+  Foundation,
+} from "@expo/vector-icons";
 
 export default function App() {
   return (
@@ -45,30 +53,85 @@ export default function App() {
           screenOptions={{ gestureEnabled: false }}
         />
         <Stack.Screen
+          name="Name"
+          component={Name}
+          screenOptions={{ gestureEnabled: false }}
+        />
+        <Stack.Screen
           name="TabNav"
           component={function Main({ route }) {
             return (
               <NetworkContext.Provider value={route}>
-                <Tab.Navigator screenOptions={{ headerShown: false }}>
+                <Tab.Navigator
+                  screenOptions={{ headerShown: false, tabBarShowLabel: false }}
+                >
                   <Tab.Screen
                     name="Home"
                     component={Home}
-                    screenOptions={{ gestureEnabled: false }}
+                    options={{
+                      gestureEnabled: false,
+                      tabBarIcon: ({ tint, focused }) => {
+                        return (
+                          <MaterialCommunityIcons
+                            name={!focused ? "home-outline" : "home"}
+                            size={30}
+                            style={{ color: "#BF41B7" }}
+                          />
+                        );
+                      },
+                    }}
                   />
                   <Tab.Screen
                     name="Favourites"
                     component={Favourites}
-                    screenOptions={{ gestureEnabled: false }}
+                    options={{
+                      gestureEnabled: false,
+                      tabBarIcon: ({ tint, focused }) => {
+                        return (
+                          <MaterialCommunityIcons
+                            name={!focused ? "bookmark-outline" : "bookmark"}
+                            size={30}
+                            style={{ color: "#BF41B7" }}
+                          />
+                        );
+                      },
+                    }}
                   />
                   <Tab.Screen
                     name="Orders"
                     component={OrderList}
-                    screenOptions={{ gestureEnabled: false }}
+                    options={{
+                      gestureEnabled: false,
+                      tabBarIcon: ({ tint, focused }) => {
+                        return (
+                          <MaterialCommunityIcons
+                            name={!focused ? "cart-outline" : "cart"}
+                            size={30}
+                            style={{ color: "#BF41B7" }}
+                          />
+                        );
+                      },
+                    }}
                   />
                   <Tab.Screen
                     name="Settings"
                     component={Settings}
-                    screenOptions={{ gestureEnabled: false }}
+                    options={{
+                      gestureEnabled: false,
+                      tabBarIcon: ({ tint, focused }) => {
+                        return (
+                          <MaterialCommunityIcons
+                            name={
+                              !focused
+                                ? "account-circle-outline"
+                                : "account-circle"
+                            }
+                            size={30}
+                            style={{ color: "#BF41B7" }}
+                          />
+                        );
+                      },
+                    }}
                   />
                 </Tab.Navigator>
               </NetworkContext.Provider>
@@ -81,32 +144,84 @@ export default function App() {
           component={function Main2({ route }) {
             return (
               <NetworkContext.Provider value={route}>
-                <Tab2.Navigator screenOptions={{ headerShown: false }}>
+                <Tab2.Navigator
+                  screenOptions={{ headerShown: false, tabBarShowLabel: false }}
+                >
                   <Tab2.Screen
                     name="StoreSide"
                     component={StoreSide}
-                    screenOptions={{ gestureEnabled: false }}
+                    options={{
+                      gestureEnabled: false,
+                      tabBarIcon: ({ tint, focused }) => {
+                        return (
+                          <MaterialCommunityIcons
+                            name={
+                              !focused ? "account-edit-outline" : "account-edit"
+                            }
+                            size={30}
+                            style={{ color: "#BF41B7" }}
+                          />
+                        );
+                      },
+                    }}
                   />
                   <Tab2.Screen
                     name="Camera"
                     component={StoreCamera}
-                    screenOptions={{ gestureEnabled: false }}
+                    options={{
+                      gestureEnabled: false,
+                      tabBarIcon: ({ tint, focused }) => {
+                        return (
+                          <MaterialCommunityIcons
+                            name={!focused ? "qrcode-scan" : "qrcode"}
+                            size={30}
+                            style={{ color: "#BF41B7" }}
+                          />
+                        );
+                      },
+                    }}
                   />
                   <Tab2.Screen
                     name="StoreOrder"
                     component={OrderStore}
-                    screenOptions={{ gestureEnabled: false }}
+                    options={{
+                      gestureEnabled: false,
+                      tabBarIcon: ({ tint, focused }) => {
+                        return (
+                          <MaterialCommunityIcons
+                            name={!focused ? "bookmark-outline" : "bookmark"}
+                            size={30}
+                            style={{ color: "#BF41B7" }}
+                          />
+                        );
+                      },
+                    }}
                   />
                   <Tab2.Screen
                     name="Settings"
                     component={Settings}
-                    screenOptions={{ gestureEnabled: false }}
+                    options={{
+                      gestureEnabled: false,
+                      tabBarIcon: ({ tint, focused }) => {
+                        return (
+                          <MaterialCommunityIcons
+                            name={
+                              !focused
+                                ? "account-circle-outline"
+                                : "account-circle"
+                            }
+                            size={30}
+                            style={{ color: "#BF41B7" }}
+                          />
+                        );
+                      },
+                    }}
                   />
                 </Tab2.Navigator>
               </NetworkContext.Provider>
             );
           }}
-          screenOptions={{ gestureEnabled: false }}
+          options={{ gestureEnabled: false }}
         />
         <Stack.Screen
           name="Store"

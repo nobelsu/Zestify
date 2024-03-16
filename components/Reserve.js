@@ -33,6 +33,8 @@ import {
 } from "firebase/firestore";
 import { NetworkContext } from "../exports";
 import QRCode from "react-native-qrcode-svg";
+import { Rating } from "react-native-ratings";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const SCWIDTH = Dimensions.get("window").width;
 
@@ -40,8 +42,19 @@ export default function Reserve({ route }) {
   const navigation = useNavigation();
   // const value = useContext(NetworkContext);
   // const user = value.params.user;
+  const [show, setShow] = useState(false);
+  const [rate, setRate] = useState(2.5);
+  const [disabled, setDisabled] = useState(false);
+  const [vis, setVis] = useState(false);
   useEffect(() => {
-    console.log(route);
+    async function Temp() {
+      const docRef = doc(db, "orders", route.params.orderID);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.data().status == 2 && docSnap.data().reviewed == false) {
+        setShow(true);
+      }
+    }
+    Temp();
   }, []);
   return (
     <ScrollView style={{ height: "100%", width: "100%" }}>
@@ -56,6 +69,7 @@ export default function Reserve({ route }) {
             onPress={() => {
               navigation.navigate("TabNav", {
                 screen: "Orders",
+                user: route.params.user,
               });
             }}
           >
@@ -99,9 +113,15 @@ export default function Reserve({ route }) {
           {route.params.name}
         </Text>
         <View style={{ flexDirection: "row", width: "90%", marginBottom: 10 }}>
+          <Text style={{ flex: 1, fontWeight: 600 }}>Date</Text>
+          <Text style={{ flex: 1, textAlign: "right" }}>
+            {route.params.date}
+          </Text>
+        </View>
+        <View style={{ flexDirection: "row", width: "90%", marginBottom: 10 }}>
           <Text style={{ flex: 1, fontWeight: 600 }}>Collection time</Text>
           <Text style={{ flex: 1, textAlign: "right" }}>
-            {route.params.collectionTime}
+            {route.params.collection}
           </Text>
         </View>
         <View style={{ flexDirection: "row", width: "90%", marginBottom: 20 }}>
@@ -143,7 +163,14 @@ export default function Reserve({ route }) {
             <Text>Total</Text>
           </View>
           <View style={{ flex: 1, alignItems: "flex-end" }}>
-            <Text>${(route.params.price * route.params.pur).toFixed(2)}</Text>
+            <Text>
+              {new Intl.NumberFormat("en-us", {
+                style: "currency",
+                currency: !route.params.currency
+                  ? "IDR"
+                  : route.params.currency,
+              }).format(Number(route.params.price) * route.params.pur)}
+            </Text>
           </View>
         </View>
         <Text
@@ -171,6 +198,65 @@ export default function Reserve({ route }) {
         >
           ID: {route.params.orderID}
         </Text>
+        {show ? (
+          <View
+            style={{
+              width: "90%",
+              marginTop: 30,
+              // marginBottom: 20,
+              borderTopWidth: 0.2,
+              paddingTop: 15,
+              alignItems: "center",
+            }}
+          >
+            {!vis ? (
+              <View style={{ width: "100%", alignItems: "center" }}>
+                <Text>Rate your experience!</Text>
+                <Rating
+                  onFinishRating={(rating) => {
+                    setRate(rating);
+                  }}
+                  style={{ marginTop: 20 }}
+                  imageSize={30}
+                  fractions={1}
+                  jumpValue={0.5}
+                />
+                <Pressable
+                  style={{
+                    height: 40,
+                    width: "100%",
+                    backgroundColor: "#BF41B7",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 15,
+                    marginTop: 30,
+                  }}
+                  disabled={disabled}
+                  onPress={async () => {
+                    const docRef = doc(db, "stores", route.params.store);
+                    const docSnap = await getDoc(docRef);
+                    await updateDoc(docRef, {
+                      rating: docSnap.data().rating + rate / 5,
+                      revcnt: docSnap.data().revcnt + 1,
+                    });
+                    const docRef2 = doc(db, "orders", route.params.orderID);
+                    await updateDoc(docRef2, { reviewed: true });
+                    setVis(true);
+                    setDisabled(false);
+                  }}
+                >
+                  <Text style={{ color: "white", fontSize: 14 }}>Submit</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <View>
+                <Text>Thank you for your review!</Text>
+              </View>
+            )}
+          </View>
+        ) : (
+          <View />
+        )}
       </View>
     </ScrollView>
   );

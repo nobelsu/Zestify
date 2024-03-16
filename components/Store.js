@@ -33,6 +33,9 @@ import {
   onSnapshot,
   addDoc,
 } from "firebase/firestore";
+import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import Slider from "./Slider";
+import { days, months } from "../exports";
 
 const SCWIDTH = Dimensions.get("window").width;
 const SCHEIGHT = Dimensions.get("window").height;
@@ -47,6 +50,9 @@ export default function Store({ route }) {
   const [vis2, setVis2] = useState(false);
   const [pur, setPur] = useState(1);
   const [val, setVal] = useState("");
+  const [disabled, setDisabled] = useState(false);
+  const [marker, setMarker] = useState({ latitude: 0, longitude: 0 });
+  const [tag, setTag] = useState(true);
   const timer = useRef(null);
   useEffect(() => {
     async function Temp() {
@@ -57,6 +63,10 @@ export default function Store({ route }) {
       const userSnap = await getDoc(userRef);
       await setHearted(userSnap.data().fav.includes(route.params.store));
       setVal(userSnap.data().name);
+      setMarker({
+        latitude: docSnap.data().loc.latitude,
+        longitude: docSnap.data().loc.longitude,
+      });
     }
     Temp();
   }, []);
@@ -65,7 +75,7 @@ export default function Store({ route }) {
       <Modal transparent={true} visible={vis} animationType="fade">
         <Pressable
           style={{
-            height: SCHEIGHT - 370,
+            height: SCHEIGHT - 480,
             width: "100%",
             justifyContent: "flex-end",
             backgroundColor: `rgba(0, 0, 0, 0.6)`,
@@ -79,7 +89,7 @@ export default function Store({ route }) {
           style={{
             backgroundColor: "white",
             width: "100%",
-            height: 370,
+            height: 480,
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -113,7 +123,7 @@ export default function Store({ route }) {
               }}
               numberOfLines={1}
             >
-              {data.collectionTime}
+              {data.collection}
             </Text>
           </View>
           <View
@@ -194,10 +204,28 @@ export default function Store({ route }) {
               <Text>Total</Text>
             </View>
             <View style={{ flex: 1, alignItems: "flex-end" }}>
-              <Text>${(data.price * pur).toFixed(2)}</Text>
+              <Text>
+                {new Intl.NumberFormat("en-us", {
+                  style: "currency",
+                  currency: !data.currency ? "IDR" : data.currency,
+                }).format(Number(data.price) * pur)}
+              </Text>
             </View>
           </View>
+          <View style={{ marginTop: 50 }}>
+            <Slider
+              height={50}
+              width={SCWIDTH * 0.9}
+              left="Today"
+              right="Tomorrow"
+              color="#BF41B7"
+              tag={tag}
+              setTag={setTag}
+            />
+          </View>
+
           <Pressable
+            disabled={disabled}
             style={{
               width: "90%",
               backgroundColor: "#BF41B7",
@@ -210,6 +238,12 @@ export default function Store({ route }) {
               marginBottom: 10,
             }}
             onPress={async () => {
+              setDisabled(true);
+              const curdate = new Date();
+              if (!tag) {
+                curdate.setDate(curdate.getDate() + 1);
+              }
+
               const storeRef = doc(db, "stores", route.params.store);
               const storeSnap = await getDoc(storeRef);
               const userRef = doc(db, "users", route.params.user);
@@ -227,6 +261,14 @@ export default function Store({ route }) {
                 user: route.params.user,
                 status: 0,
                 price: data.price * pur,
+                date: {
+                  day: curdate.getDay(),
+                  date: curdate.getDate(),
+                  month: curdate.getMonth() + 1,
+                  year: curdate.getFullYear(),
+                },
+                userName: userSnap.data().name,
+                reviewed: false,
               });
               await updateDoc(storeRef, {
                 stock: storeSnap.data().stock - pur,
@@ -243,8 +285,12 @@ export default function Store({ route }) {
                 orderID: docRef.id,
                 username: val,
                 price: data.price,
+                date: `${days[curdate.getDay()]}, ${curdate.getDate()} ${
+                  months[curdate.getMonth()]
+                } ${curdate.getFullYear()}`,
               });
               setVis(false);
+              setDisabled(false);
             }}
           >
             <Text style={{ color: "white", fontSize: 14 }}>Confirm</Text>
@@ -391,7 +437,7 @@ export default function Store({ route }) {
             <View style={{ flex: 2.5, paddingRight: 15 }}>
               <Text
                 style={{
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: 900,
                   marginLeft: "5%",
                   marginTop: "5%",
@@ -423,7 +469,7 @@ export default function Store({ route }) {
                     width: "90%",
                   }}
                 >
-                  From {data.collectionStart} until {data.collectionEnd}
+                  From {data.collection}
                 </Text>
               </View>
               <View
@@ -457,22 +503,28 @@ export default function Store({ route }) {
 
             <View
               style={{
-                flex: 1,
+                flex: 1.8,
                 justifyContent: "center",
               }}
             >
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: 12,
                   textDecorationLine: "line-through",
                   textDecorationStyle: "solid",
                   color: "grey",
                 }}
               >
-                ${data.oriprice}
+                {new Intl.NumberFormat("en-us", {
+                  style: "currency",
+                  currency: !data.currency ? "IDR" : data.currency,
+                }).format(data.oriprice)}
               </Text>
-              <Text style={{ fontSize: 24, fontWeight: 700 }}>
-                ${data.price}
+              <Text style={{ fontSize: 18, fontWeight: 700 }}>
+                {new Intl.NumberFormat("en-us", {
+                  style: "currency",
+                  currency: !data.currency ? "IDR" : data.currency,
+                }).format(data.price)}
               </Text>
               <View
                 style={{
@@ -508,7 +560,6 @@ export default function Store({ route }) {
                   flexDirection: "row",
                 }}
               >
-                <Ionicons name="star" size={15} style={{ color: "#FDCC0D" }} />
                 <Text
                   style={{
                     fontSize: 14,
@@ -517,7 +568,7 @@ export default function Store({ route }) {
                     marginLeft: 5,
                   }}
                 >
-                  {data.rating * 5}
+                  {data.qsold} sold
                 </Text>
               </View>
             </View>
@@ -553,20 +604,24 @@ export default function Store({ route }) {
                 {data.desc}
               </Text>
             </View>
-            <View style={{ marginTop: 3 }}>
-              <Pressable
-                onPress={() => {
-                  numLines == 3 ? setnumLines(100) : setnumLines(3);
-                  textSee == "See more"
-                    ? settextSee("See less")
-                    : settextSee("See more");
-                }}
-              >
-                <Text style={{ fontWeight: 600, color: "#BF41B7" }}>
-                  {textSee}
-                </Text>
-              </Pressable>
-            </View>
+            {data.desc && data.desc.length > 115 ? (
+              <View style={{ marginTop: 3 }}>
+                <Pressable
+                  onPress={() => {
+                    numLines == 3 ? setnumLines(100) : setnumLines(3);
+                    textSee == "See more"
+                      ? settextSee("See less")
+                      : settextSee("See more");
+                  }}
+                >
+                  <Text style={{ fontWeight: 600, color: "#BF41B7" }}>
+                    {textSee}
+                  </Text>
+                </Pressable>
+              </View>
+            ) : (
+              <View></View>
+            )}
             <View
               style={{
                 backgroundColor: "white",
@@ -589,19 +644,93 @@ export default function Store({ route }) {
                   marginTop: 8,
                   fontWeight: 200,
                 }}
+                numberOfLines={numLines}
               >
                 {data.ing}
               </Text>
-
-              {/* <Text
+            </View>
+            <View
+              style={{
+                backgroundColor: "white",
+                paddingTop: 30,
+                paddingBottom: 30,
+                marginTop: 20,
+                marginBottom: 20,
+                borderTopWidth: 0.2,
+                borderBottomWidth: 0.2,
+              }}
+            >
+              <Text
                 style={{
-                  textAlign: "justify",
-                  marginTop: 8,
+                  fontSize: 14,
+                  textAlign: "center",
+                  width: "100%",
                   fontWeight: 200,
                 }}
               >
-                Flour, eggs, sugar
-              </Text> */}
+                <Text style={{ fontWeight: 700 }}>{data.revcnt}</Text> people
+                rated this store...
+              </Text>
+              <View
+                style={{
+                  marginTop: 15,
+                  width: "100%",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{ flexDirection: "row", justifyContent: "center" }}
+                >
+                  <Ionicons
+                    name="star"
+                    size={40}
+                    style={{
+                      color: "#FDCC0D",
+                      marginTop: 10,
+                      marginRight: 3,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 50,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {((data.rating * 5) / Math.max(1, data.revcnt)).toFixed(1)}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View
+              style={{
+                backgroundColor: "white",
+                paddingTop: 4,
+                paddingBottom: 20,
+                marginTop: 8,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                }}
+              >
+                Location
+              </Text>
+              <MapView
+                initialRegion={{
+                  latitude:
+                    marker["latitude"] != 0 ? marker["latitude"] : -6.1728,
+                  longitude:
+                    marker["longitude"] != 0 ? marker["longitude"] : 106.8272,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}
+                provider={PROVIDER_GOOGLE}
+                style={{ height: 300, width: "100%", marginTop: 8 }}
+              >
+                {marker ? <Marker coordinate={marker} /> : <View />}
+              </MapView>
             </View>
           </View>
         </View>
