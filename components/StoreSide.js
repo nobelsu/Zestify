@@ -489,7 +489,6 @@ export default function StoreSide() {
                 data={currencyCodes.map((item, index) => {
                   return { label: item, value: item };
                 })}
-                search
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
