@@ -117,17 +117,14 @@ export default function StoreCamera() {
           const id = scanned.data;
           if (!isAlphaNumeric(id)) {
             setVis(true);
-
           } else {
           const ordersRef = doc(db, "orders", id);
-          ordersRef.get()
-              .then((docSnapshot) => {
-                if (docSnapshot.exists) {
-                  navigation.navigate("StoreOrderDetails", { id: id });
-                } else {
-                  setVis(true);
-                }
-            });
+          const orderSnap = getDoc(ordersRef);
+          if (orderSnap.exists) {
+            navigation.navigate("StoreOrderDetails", { id: id });
+          } else {
+            setVis(true);
+          }
           }
         }}
       ></Camera>
@@ -143,3 +140,4 @@ export default function StoreCamera() {
   //   />
   // );
 }
+
