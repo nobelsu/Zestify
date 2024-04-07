@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "recyclingapp",
+    "name": "Zestify",
     "slug": "recyclingapp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,13 +9,14 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#BF41B7"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.suhendra.zestify"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +26,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "98449bab-b286-4906-8d25-a99cb3e8511c"
+      }
     }
   }
 }
