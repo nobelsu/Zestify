@@ -182,6 +182,7 @@ export default function Home() {
                     fontSize: 12,
                     marginTop: 0.2,
                     fontWeight: 200,
+                    width: "95%",
                   }}
                   numberOfLines={2}
                 >
@@ -203,6 +204,7 @@ export default function Home() {
                     fontSize: 12,
                     marginTop: 0.2,
                     fontWeight: 200,
+                    width: "95%",
                   }}
                   numberOfLines={1}
                 >

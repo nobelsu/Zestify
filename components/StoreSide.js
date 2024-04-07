@@ -58,12 +58,13 @@ export default function StoreSide() {
   const [marker, setMarker] = useState({ latitude: 0, longitude: 0 });
   const [secondPress, setSecondPress] = useState(false);
   const [address, setAddress] = useState("");
-  const [currency, setCurrency] = useState("");
+  const [currency, setCurrency] = useState("IDR");
   const [valoo, setValoo] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
 
   useEffect(() => {
     async function Temp() {
+      console.log(user);
       const docRef = doc(db, "stores", user);
       const docSnap = await getDoc(docRef);
       setName(docSnap.data().name);
@@ -489,12 +490,10 @@ export default function StoreSide() {
                 data={currencyCodes.map((item, index) => {
                   return { label: item, value: item };
                 })}
-                search
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
                 placeholder={!isFocus ? "Select item" : "..."}
-                searchPlaceholder="Search..."
                 value={currency}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}

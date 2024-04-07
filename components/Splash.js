@@ -77,3 +77,6 @@ export default function Splash() {
     </View>
   );
 }
+
+// 6210 LINES OF CODE
+// JKLDGFHSJ IM FINALLY DONE HELP

@@ -227,12 +227,10 @@ export default function Register() {
                 { label: "Customer", value: 0 },
                 { label: "Store", value: 1 },
               ]}
-              search
               maxHeight={300}
               labelField="label"
               valueField="value"
               placeholder={!isFocus ? "Select item" : "..."}
-              searchPlaceholder="Search..."
               value={typee}
               onFocus={() => setIsFocus(true)}
               onBlur={() => setIsFocus(false)}
@@ -310,8 +308,8 @@ export default function Register() {
                       name: "My store",
                       new: true,
                       orders: [],
-                      oriprice: "Rp. 99,999",
-                      price: "Rp. 9,999",
+                      oriprice: 99999,
+                      price: 9999,
                       promo: false,
                       rating: 0,
                       revcnt: 0,
@@ -323,6 +321,7 @@ export default function Register() {
                       address: "My address",
                       qsold: 0,
                       email: email,
+                      currency: "IDR",
                     });
                     navigation.navigate("TabNav2", {
                       screen: "Store",
