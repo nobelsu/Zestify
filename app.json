@@ -26,6 +26,7 @@
       "package": "com.suhendra.zestify"
     },
     "web": {
+      "bundler": "metro",
       "favicon": "./assets/favicon.png"
     },
     "extra": {
