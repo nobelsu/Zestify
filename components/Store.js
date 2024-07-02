@@ -726,7 +726,6 @@ export default function Store({ route }) {
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                 }}
-                provider={PROVIDER_GOOGLE}
                 style={{ height: 300, width: "100%", marginTop: 8 }}
               >
                 {marker ? <Marker coordinate={marker} /> : <View />}

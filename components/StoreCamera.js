@@ -35,11 +35,11 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { NetworkContext } from "../exports";
-import { Camera, CameraType } from "expo-camera";
+import { useCameraPermissions, CameraView, CameraType } from "expo-camera";
 
 export default function StoreCamera() {
   const navigation = useNavigation();
-  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [permission, requestPermission] = useCameraPermissions();
   const [vis, setVis] = useState(false);
 
   useEffect(() => {
@@ -48,17 +48,20 @@ export default function StoreCamera() {
 
   function isAlphaNumeric(str) {
     var code, i, len;
-  
+
     for (i = 0, len = str.length; i < len; i++) {
       code = str.charCodeAt(i);
-      if (!(code > 47 && code < 58) && // numeric (0-9)
-          !(code > 64 && code < 91) && // upper alpha (A-Z)
-          !(code > 96 && code < 123)) { // lower alpha (a-z)
+      if (
+        !(code > 47 && code < 58) && // numeric (0-9)
+        !(code > 64 && code < 91) && // upper alpha (A-Z)
+        !(code > 96 && code < 123)
+      ) {
+        // lower alpha (a-z)
         return false;
       }
     }
     return true;
-  };
+  }
 
   if (!permission) return <View></View>;
 
@@ -103,31 +106,29 @@ export default function StoreCamera() {
               Invalid Order ID
             </Text>
             <Text style={{ width: "90%", textAlign: "center" }}>
-             Please check your QR code!
+              Please check your QR code!
             </Text>
-
-            
           </View>
         </Pressable>
       </Modal>
-      <Camera
+      <CameraView
         style={{ flex: 1 }}
-        type={CameraType.back}
+        facing={"back"}
         onBarCodeScanned={async (scanned) => {
           const id = scanned.data;
           if (!isAlphaNumeric(id)) {
             setVis(true);
           } else {
-          const ordersRef = doc(db, "orders", id);
-          const orderSnap = getDoc(ordersRef);
-          if (orderSnap.exists) {
-            navigation.navigate("StoreOrderDetails", { id: id });
-          } else {
-            setVis(true);
-          }
+            const ordersRef = doc(db, "orders", id);
+            const orderSnap = getDoc(ordersRef);
+            if (orderSnap.exists) {
+              navigation.navigate("StoreOrderDetails", { id: id });
+            } else {
+              setVis(true);
+            }
           }
         }}
-      ></Camera>
+      ></CameraView>
     </View>
   );
   // const device = useCameraDevice("back");
@@ -140,4 +141,3 @@ export default function StoreCamera() {
   //   />
   // );
 }
-

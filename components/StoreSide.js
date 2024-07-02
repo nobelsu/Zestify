@@ -297,7 +297,6 @@ export default function StoreSide() {
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}
-            provider={PROVIDER_GOOGLE}
             onPress={(e) => {
               if (pressed) {
                 setMarker(e.nativeEvent.coordinate);

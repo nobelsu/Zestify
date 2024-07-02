@@ -37,6 +37,10 @@ import { db } from "../firebase";
 const SCWIDTH = Dimensions.get("window").width;
 
 const codes = {
+  "undefined-error": {
+    id: 0,
+    msg: "Undefined",
+  },
   "auth/invalid-email": {
     id: 1,
     msg: "Invalid email!",
@@ -260,20 +264,20 @@ export default function Login() {
             .then((userCredential) => {
               const user = userCredential.user;
               async function Temp() {
-                const docRef = doc(db, "users", user.uid);
+                const docRef = doc(db, "users", user.uid.toString());
                 const docSnap = await getDoc(docRef);
                 if (!docSnap.exists()) {
                   navigation.navigate("TabNav2", {
                     screen: "Store",
-                    user: user.uid,
+                    user: user.uid.toString(),
                   });
                 } else {
                   if (docSnap.data().name == "") {
-                    navigation.navigate("Name", { user: user.uid });
+                    navigation.navigate("Name", { user: user.uid.toString() });
                   } else {
                     navigation.navigate("TabNav", {
                       screen: "Home",
-                      user: user.uid,
+                      user: user.uid.toString(),
                     });
                   }
                 }
@@ -281,9 +285,10 @@ export default function Login() {
               Temp();
             })
             .catch((error) => {
-              setCodee(codes[error.code].msg);
+              setCodee(codes[error.code.toString()].msg);
               if (codes[error.code].id > 1) setPassValid(0);
               else setEmailValid(0);
+              throw error;
             });
         }}
       >
