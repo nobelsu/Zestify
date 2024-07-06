@@ -37,28 +37,33 @@ import SVG from "../assets/logo.svg";
 export default function Splash() {
   const navigation = useNavigation();
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        async function Temp() {
-          const docRef = doc(db, "users", user);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.type) {
-            navigation.navigate("TabNav2", {
-              screen: "Store",
-              user: user.uid,
-            });
-          } else {
-            navigation.navigate("TabNav", {
-              screen: "Home",
-              user: user.uid,
-            });
+    try {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          async function Temp() {
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.type) {
+              navigation.navigate("TabNav2", {
+                screen: "Store",
+                user: user.uid,
+              });
+            } else {
+              navigation.navigate("TabNav", {
+                screen: "Home",
+                user: user.uid,
+              });
+            }
           }
+          Temp();
+        } else {
+          navigation.navigate("Login");
         }
-        Temp();
-      } else {
-        navigation.navigate("Login");
-      }
-    });
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }, []);
   return (
     <View
@@ -69,12 +74,7 @@ export default function Splash() {
         justifyContent: "center",
         alignItems: "center",
       }}
-    >
-      <Image
-        source={require("../assets/logo.png")}
-        style={{ width: 120, height: 120 }}
-      />
-    </View>
+    ></View>
   );
 }
 

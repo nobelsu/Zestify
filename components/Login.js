@@ -36,25 +36,6 @@ import { db } from "../firebase";
 
 const SCWIDTH = Dimensions.get("window").width;
 
-const codes = {
-  "undefined-error": {
-    id: 0,
-    msg: "Undefined",
-  },
-  "auth/invalid-email": {
-    id: 1,
-    msg: "Invalid email!",
-  },
-  "auth/missing-password": {
-    id: 2,
-    msg: "Missing password!",
-  },
-  "auth/invalid-credential": {
-    id: 3,
-    msg: "Invalid credentials!",
-  },
-};
-
 export default function Login() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
@@ -70,6 +51,52 @@ export default function Login() {
     setPassValid(true);
     setCodee("");
   }, []);
+
+  function mctm(authCode) {
+    switch (authCode) {
+      case "auth/mising-password":
+        return "Missing password!";
+
+      case "auth/invalid-email":
+        return "Invalid email!";
+
+      case "auth/invalid-credential":
+        return "Invalid credentials!";
+
+      default:
+        return "Error!";
+    }
+  }
+
+  const login = async (email, password) => {
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      const docRef = doc(db, "users", response.user.uid.toString());
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        navigation.navigate("TabNav2", {
+          screen: "Store",
+          user: response.user.uid.toString(),
+        });
+      } else {
+        if (docSnap.data().name == "") {
+          navigation.navigate("Name", {
+            user: response.user.uid.toString(),
+          });
+        } else {
+          navigation.navigate("TabNav", {
+            screen: "Home",
+            user: response.user.uid.toString(),
+          });
+        }
+      }
+    } catch (e) {
+      setCodee(mctm(e.code));
+      if (e.code === "auth/invalid-email") setEmailValid(0);
+      else setPassValid(0);
+      throw e;
+    }
+  };
 
   return (
     <View
@@ -260,36 +287,22 @@ export default function Login() {
         onPress={async () => {
           setEmailValid(1);
           setPassValid(1);
-          signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-              const user = userCredential.user;
-              async function Temp() {
-                const docRef = doc(db, "users", user.uid.toString());
-                const docSnap = await getDoc(docRef);
-                if (!docSnap.exists()) {
-                  navigation.navigate("TabNav2", {
-                    screen: "Store",
-                    user: user.uid.toString(),
-                  });
-                } else {
-                  if (docSnap.data().name == "") {
-                    navigation.navigate("Name", { user: user.uid.toString() });
-                  } else {
-                    navigation.navigate("TabNav", {
-                      screen: "Home",
-                      user: user.uid.toString(),
-                    });
-                  }
-                }
-              }
-              Temp();
-            })
-            .catch((error) => {
-              setCodee(codes[error.code.toString()].msg);
-              if (codes[error.code].id > 1) setPassValid(0);
-              else setEmailValid(0);
-              throw error;
-            });
+          login(email, password);
+
+          // signInWithEmailAndPassword(auth, email, password)
+          //   .then((userCredential) => {
+          //     const user = userCredential.user;
+          //     async function Temp() {
+
+          //     }
+          //     Temp();
+          //   })
+          //   .catch((error) => {
+          //     setCodee(codes[error.code]);
+          //     if (codes[error.code].id > 1) setPassValid(0);
+          //     else setEmailValid(0);
+          //     throw error;
+          //   });
         }}
       >
         <Text style={{ color: "#BF41B7", fontSize: 16, fontWeight: 500 }}>

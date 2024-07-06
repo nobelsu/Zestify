@@ -88,7 +88,7 @@ export default function Settings() {
       const docRef = doc(db, "users", user);
       const docSnap = await getDoc(docRef);
       setIsuser(docSnap.exists());
-      if (docSnap.exists) setName(docSnap.data().name);
+      if (docSnap.exists()) setName(docSnap.data().name);
     }
     Temp();
   }, [reload]);
