@@ -2,7 +2,7 @@
   "expo": {
     "name": "Zestify - Eat Sustainably",
     "slug": "recyclingapp",
-    "version": "1.0.6",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -31,7 +31,6 @@
     },
     "extra": {
       "eas": {
-        "projectId": "98449bab-b286-4906-8d25-a99cb3e8511c"
       }
     }
   }
