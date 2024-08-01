@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import Store from "./components/Store";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import "react-native-gesture-handler";
 import { createStackNavigator } from "@react-navigation/stack";
 import Splash from "./components/Splash";
 import Favourites from "./components/Favourite";
@@ -27,7 +28,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   MaterialCommunityIcons,
   Feather,
-  Foundation,
+  Foundation
 } from "@expo/vector-icons";
 
 export default function App() {
@@ -35,8 +36,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName="Splash"
-      >
+        initialRouteName="Splash">
         <Stack.Screen
           name="Splash"
           component={Splash}
@@ -63,8 +63,10 @@ export default function App() {
             return (
               <NetworkContext.Provider value={route}>
                 <Tab.Navigator
-                  screenOptions={{ headerShown: false, tabBarShowLabel: false }}
-                >
+                  screenOptions={{
+                    headerShown: false,
+                    tabBarShowLabel: false
+                  }}>
                   <Tab.Screen
                     name="Home"
                     component={Home}
@@ -78,7 +80,7 @@ export default function App() {
                             style={{ color: "#BF41B7" }}
                           />
                         );
-                      },
+                      }
                     }}
                   />
                   <Tab.Screen
@@ -94,7 +96,7 @@ export default function App() {
                             style={{ color: "#BF41B7" }}
                           />
                         );
-                      },
+                      }
                     }}
                   />
                   <Tab.Screen
@@ -110,7 +112,7 @@ export default function App() {
                             style={{ color: "#BF41B7" }}
                           />
                         );
-                      },
+                      }
                     }}
                   />
                   <Tab.Screen
@@ -130,7 +132,7 @@ export default function App() {
                             style={{ color: "#BF41B7" }}
                           />
                         );
-                      },
+                      }
                     }}
                   />
                 </Tab.Navigator>
@@ -145,8 +147,10 @@ export default function App() {
             return (
               <NetworkContext.Provider value={route}>
                 <Tab2.Navigator
-                  screenOptions={{ headerShown: false, tabBarShowLabel: false }}
-                >
+                  screenOptions={{
+                    headerShown: false,
+                    tabBarShowLabel: false
+                  }}>
                   <Tab2.Screen
                     name="StoreSide"
                     component={StoreSide}
@@ -162,7 +166,7 @@ export default function App() {
                             style={{ color: "#BF41B7" }}
                           />
                         );
-                      },
+                      }
                     }}
                   />
                   <Tab2.Screen
@@ -178,7 +182,7 @@ export default function App() {
                             style={{ color: "#BF41B7" }}
                           />
                         );
-                      },
+                      }
                     }}
                   />
                   <Tab2.Screen
@@ -194,7 +198,7 @@ export default function App() {
                             style={{ color: "#BF41B7" }}
                           />
                         );
-                      },
+                      }
                     }}
                   />
                   <Tab2.Screen
@@ -214,7 +218,7 @@ export default function App() {
                             style={{ color: "#BF41B7" }}
                           />
                         );
-                      },
+                      }
                     }}
                   />
                 </Tab2.Navigator>
