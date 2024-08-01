@@ -43,6 +43,7 @@ import {
   signOut,
   updatePassword,
   signInWithEmailAndPassword,
+  deleteUser
 } from "firebase/auth";
 
 const codes = {
@@ -83,6 +84,7 @@ export default function Settings() {
   const [oldvis, setOldvis] = useState("");
   const [modvis, setModvis] = useState(false);
   const [namevis, setNamevis] = useState(false);
+  const [accvis, setAccvis] = useState(false);
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "users", user);
@@ -95,6 +97,79 @@ export default function Settings() {
 
   return (
     <ScrollView style={{ height: "100%" }}>
+      <Modal transparent={true} visible={accvis} animationType="fade">
+        <Pressable
+          style={{
+            height: "100%",
+            width: "100%",
+            backgroundColor: `rgba(0, 0, 0, 0.6)`,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            setAccvis(false);
+          }}
+        >
+          <View
+            style={{
+              height: 280,
+              width: 280,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "white",
+              borderRadius: 15,
+            }}
+          >
+            <Ionicons color={"#BF41B7"} name="alert-circle-outline" size={80} />
+            <Text
+              style={{
+                marginTop: 10,
+                marginBottom: 10,
+                fontWeight: 600,
+                fontSize: 16,
+                width: "90%",
+                textAlign: "center",
+              }}
+            >
+              Notice
+            </Text>
+            <Text style={{ width: "90%", textAlign: "center" }}>
+              Please confirm that you would like to delete your account permanently.
+            </Text>
+
+            <Pressable
+              style={{
+                width: "90%",
+                height: 45,
+                backgroundColor: "#BF41B7",
+                marginTop: 20,
+                borderRadius: 10,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={async () => {
+                const auth = getAuth();
+                deleteUser(auth.currentUser)
+                .then(async () => {
+                  const ref = doc(db, "users", user);
+                  const snap = await getDoc(ref);
+                  if (snap.exists()) {
+                    await deleteDoc(ref);
+                  } else {
+                    await deleteDoc(doc(db, "stores", user));
+                  }
+                  setAccvis(false);
+                })
+                .catch((error) => {
+                  console.log('Error deleting user:', error);
+                });
+              }}
+            >
+              <Text style={{ color: "white" }}>Confirm</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
       <Modal transparent={true} visible={modvis} animationType="fade">
         <Pressable
           style={{
@@ -568,6 +643,22 @@ export default function Settings() {
         }}
       >
         <Text style={{ color: "white" }}>Logout</Text>
+      </Pressable>
+      <Pressable
+        style={{
+          width: "90%",
+          backgroundColor: "#BF41B7",
+          height: 50,
+          borderRadius: 15,
+          justifyContent: "center",
+          alignItems: "center",
+          marginLeft: "5%",
+          marginTop: 15,
+          backgroundColor: "red"
+        }}
+        onPress={() => {setAccvis(true);}}
+      >
+        <Text style={{ color: "white" }}>Delete</Text>
       </Pressable>
     </ScrollView>
   );
