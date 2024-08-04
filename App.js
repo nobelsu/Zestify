@@ -28,8 +28,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   MaterialCommunityIcons,
   Feather,
-  Foundation
+  Foundation,
 } from "@expo/vector-icons";
+import Home2 from "./components/Home2";
+import Store2 from "./components/Store2";
 
 export default function App() {
   return (
@@ -228,10 +230,23 @@ export default function App() {
           options={{ gestureEnabled: false }}
         />
         <Stack.Screen
+          name="Home2"
+          component={Home2}
+          screenOptions={{ gestureEnabled: false }}
+        />
+
+        <Stack.Screen
           name="Store"
           component={Store}
           screenOptions={{ gestureEnabled: false }}
         />
+
+        <Stack.Screen
+          name="Store2"
+          component={Store2}
+          screenOptions={{ gestureEnabled: false }}
+        />
+
         <Stack.Screen
           name="Reserve"
           component={Reserve}

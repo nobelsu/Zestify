@@ -309,6 +309,23 @@ export default function Login() {
           Login
         </Text>
       </Pressable>
+      <View style={{alignItems: "center", marginTop: 30}}>
+        <View style={{flexDirection: "row", alignItems: "center"}}>
+          <View style={{width: "35%", borderWidth: 0.5, marginRight: "5%"}}></View>
+          <Text style={{fontSize: 12, fontWeight: 200}}>OR</Text>
+          <View style={{width: "35%", borderWidth: 0.5, marginLeft: "5%"}}></View>
+        </View>
+        <View style={{marginTop: 20}}>
+          <Text style={{fontSize: 14, fontWeight: 200}}>
+            Continue{" "}
+            <Text style={{color: "#BF41B7"}} onPress={() => {
+              navigation.navigate("Home2");
+            }}>anonymously...</Text>
+          </Text>
+        </View>
+      </View>
+      
+
     </View>
   );
 }

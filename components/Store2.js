@@ -40,16 +40,13 @@ import { days, months } from "../exports";
 const SCWIDTH = Dimensions.get("window").width;
 const SCHEIGHT = Dimensions.get("window").height;
 
-export default function Store({ route }) {
+export default function Store2({ route }) {
   const navigation = useNavigation();
-  const [hearted, setHearted] = useState(false); // adjust based on data stored
   const [numLines, setnumLines] = useState(3);
   const [textSee, settextSee] = useState("See more");
   const [data, setData] = useState({});
   const [vis, setVis] = useState(false);
-  const [vis2, setVis2] = useState(false);
   const [pur, setPur] = useState(1);
-  const [val, setVal] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [marker, setMarker] = useState({ latitude: 0, longitude: 0 });
   const [tag, setTag] = useState(true);
@@ -57,12 +54,8 @@ export default function Store({ route }) {
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "stores", route.params.store);
-      const userRef = doc(db, "users", route.params.user);
       const docSnap = await getDoc(docRef);
       await setData({ ...docSnap.data(), id: route.params.store });
-      const userSnap = await getDoc(userRef);
-      await setHearted(userSnap.data().fav.includes(route.params.store));
-      setVal(userSnap.data().name);
       setMarker({
         latitude: docSnap.data().loc.latitude,
         longitude: docSnap.data().loc.longitude,
@@ -237,108 +230,14 @@ export default function Store({ route }) {
               marginTop: 50,
               marginBottom: 10,
             }}
-            onPress={async () => {
+            onPress={() => {
               setDisabled(true);
-              const curdate = new Date();
-              if (!tag) {
-                curdate.setDate(curdate.getDate() + 1);
-              }
-
-              const storeRef = doc(db, "stores", route.params.store);
-              const storeSnap = await getDoc(storeRef);
-              const userRef = doc(db, "users", route.params.user);
-              const userSnap = await getDoc(userRef);
-              if (storeSnap.data().stock < pur) {
-                setPur(1);
-                setVis(false);
-                setVis2(true);
-                return;
-              }
-              const docRef = await addDoc(collection(db, "orders"), {
-                quantity: pur,
-                store: route.params.store,
-                storeName: storeSnap.data().name,
-                user: route.params.user,
-                status: 0,
-                price: data.price * pur,
-                date: {
-                  day: curdate.getDay(),
-                  date: curdate.getDate(),
-                  month: curdate.getMonth() + 1,
-                  year: curdate.getFullYear(),
-                },
-                userName: userSnap.data().name,
-                reviewed: false,
-              });
-              await updateDoc(storeRef, {
-                stock: storeSnap.data().stock - pur,
-                orders: [...storeSnap.data().orders, docRef.id],
-              });
-              await updateDoc(userRef, {
-                orders: [...userSnap.data().orders, docRef.id],
-              });
-
-              navigation.navigate("Reserve", {
-                ...data,
-                pur: pur,
-                user: route.params.user,
-                orderID: docRef.id,
-                username: val,
-                price: data.price,
-                date: `${days[curdate.getDay()]}, ${curdate.getDate()} ${
-                  months[curdate.getMonth()]
-                } ${curdate.getFullYear()}`,
-              });
-              setVis(false);
-              setDisabled(false);
+              navigation.navigate("Login");
             }}
           >
             <Text style={{ color: "white", fontSize: 14 }}>Confirm</Text>
           </Pressable>
         </View>
-      </Modal>
-      <Modal transparent={true} visible={vis2} animationType="fade">
-        <Pressable
-          style={{
-            height: "100%",
-            width: "100%",
-            backgroundColor: `rgba(0, 0, 0, 0.6)`,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onPress={() => {
-            setVis2(false);
-          }}
-        >
-          <View
-            style={{
-              height: 240,
-              width: 280,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "white",
-              borderRadius: 15,
-            }}
-          >
-            <Ionicons color={"#BF41B7"} name="alert-circle-outline" size={80} />
-            <Text
-              style={{
-                marginTop: 10,
-                marginBottom: 10,
-                fontWeight: 600,
-                fontSize: 16,
-                width: "90%",
-                textAlign: "center",
-              }}
-            >
-              Reserve failed
-            </Text>
-            <Text style={{ width: "90%", textAlign: "center" }}>
-              The store's stock has updated. Reload the page to view the
-              changes!
-            </Text>
-          </View>
-        </Pressable>
       </Modal>
       <ScrollView style={{ flex: 3.5 }}>
         <View style={{ height: 240 }}>
@@ -385,30 +284,6 @@ export default function Store({ route }) {
                     flex: 1,
                   }}
                 >
-                  <Pressable
-                    onPress={async () => {
-                      setHearted(!hearted);
-                      const ref = doc(db, "users", route.params.user);
-                      const snap = await getDoc(ref);
-                      const ori = snap.data()["fav"];
-                      if (hearted)
-                        ori.splice(ori.indexOf(route.params.store), 1);
-                      else ori.push(route.params.store);
-                      await updateDoc(ref, { fav: ori });
-                    }}
-                  >
-                    <Ionicons
-                      name={hearted ? "heart" : "heart-outline"}
-                      color={hearted ? "#BF41B7" : "white"}
-                      size={36}
-                      style={{
-                        marginLeft: "70%",
-                        marginTop: "30%",
-                        width: 48,
-                        height: 48,
-                      }}
-                    />
-                  </Pressable>
                 </View>
               </View>
               <View style={{ flexDirection: "row", width: "100%", flex: 0.8 }}>
