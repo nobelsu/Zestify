@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect, useRef } from "react";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useRef, useCallback, } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -16,6 +16,7 @@ import {
   SectionList,
   Modal,
   Dimensions,
+  RefreshControl
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
@@ -54,6 +55,25 @@ export default function Store({ route }) {
   const [marker, setMarker] = useState({ latitude: 0, longitude: 0 });
   const [tag, setTag] = useState(true);
   const timer = useRef(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const [user, setUser] = useState(route.params.user);
+  const [store, setStore] = useState(route.params.store);
+
+  const isFocused = useIsFocused();
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    setUser(route.params.user);
+    setStore(route.params.store);
+  }, [isFocused])
+
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "stores", route.params.store);
@@ -69,7 +89,7 @@ export default function Store({ route }) {
       });
     }
     Temp();
-  }, []);
+  }, [refreshing, store, user]);
   return (
     <View style={{ height: "100%", width: "100%", backgroundColor: "white" }}>
       <Modal transparent={true} visible={vis} animationType="fade">
@@ -340,7 +360,9 @@ export default function Store({ route }) {
           </View>
         </Pressable>
       </Modal>
-      <ScrollView style={{ flex: 3.5 }}>
+      <ScrollView style={{ flex: 3.5 }} refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View style={{ height: 240 }}>
           <ImageBackground
             source={{

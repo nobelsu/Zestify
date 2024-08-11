@@ -3,8 +3,8 @@ import {
   usePreventRemoveContext,
 } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useContext, useCallback, } from "react";
+import { useNavigation, useIsFocused, } from "@react-navigation/native";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -73,6 +73,7 @@ export default function Settings() {
   const navigation = useNavigation();
   const value = useContext(NetworkContext);
   const auth = getAuth();
+  const isFocused = useIsFocused();
   const [user, setUser] = useState(value.params.user);
   const [isuser, setIsuser] = useState(false);
   const [name, setName] = useState("");
@@ -93,7 +94,11 @@ export default function Settings() {
       if (docSnap.exists()) setName(docSnap.data().name);
     }
     Temp();
-  }, [reload]);
+  }, [reload, user]);
+
+  useEffect(() => {
+    setUser(value.params.user);
+  }, [isFocused])
 
   return (
     <ScrollView style={{ height: "100%" }}>

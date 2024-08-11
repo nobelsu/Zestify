@@ -332,7 +332,6 @@ export default function Register() {
                       orders: [],
                       fav: [],
                       name: "",
-                      type: typee,
                       email: email,
                     });
                     navigation.navigate("Name", { user: user.uid });

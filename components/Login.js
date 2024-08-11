@@ -72,10 +72,12 @@ export default function Login() {
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
       const docRef = doc(db, "users", response.user.uid.toString());
+      console.log(response.user.uid.toString());
       const docSnap = await getDoc(docRef);
+      console.log(docSnap.exists());
       if (!docSnap.exists()) {
         navigation.navigate("TabNav2", {
-          screen: "Store",
+          screen: "StoreSide",
           user: response.user.uid.toString(),
         });
       } else {

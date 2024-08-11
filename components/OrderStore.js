@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback, } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   KeyboardAvoidingView,
@@ -17,6 +17,7 @@ import {
   FlatList,
   Dimensions,
   Keyboard,
+  RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
@@ -36,6 +37,8 @@ import {
 } from "firebase/firestore";
 import { NetworkContext, days, months } from "../exports";
 
+
+
 const ini = [
   { val: "Pending", color: "black" },
   { val: "Cancelled", color: "red" },
@@ -52,10 +55,19 @@ export default function OrderStore() {
   const [focused, setFocused] = useState(false);
   const [val, setVal] = useState("");
   const [pressed, setPressed] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  }, []);
+
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "stores", user);
       const docSnap = await getDoc(docRef);
+      console.log(docSnap.data())
       const ref = collection(db, "stores");
       const orderRef = collection(db, "orders");
       const orderSnap = query(
@@ -71,7 +83,7 @@ export default function OrderStore() {
       });
     }
     Temp();
-  }, [pressed]);
+  }, [pressed, refreshing]);
 
   return (
     <View style={{ height: "100%", width: "100%" }}>
@@ -295,6 +307,9 @@ export default function OrderStore() {
         }}
         style={{ marginBottom: 20 }}
         rightOpenValue={-75}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </View>
   );

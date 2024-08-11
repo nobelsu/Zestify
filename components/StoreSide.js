@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused} from "@react-navigation/native";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -40,6 +40,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { Dropdown } from "react-native-element-dropdown";
 
 export default function StoreSide() {
+  const isFocused = useIsFocused();
   const value = useContext(NetworkContext);
   const [user, setUser] = useState(value.params.user);
   const [name, setName] = useState("");
@@ -62,9 +63,12 @@ export default function StoreSide() {
   const [valoo, setValoo] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
 
+  useEffect(()=> {
+    setUser(value.params.user);
+  }, [isFocused])
+
   useEffect(() => {
     async function Temp() {
-      console.log(user);
       const docRef = doc(db, "stores", user);
       const docSnap = await getDoc(docRef);
       setName(docSnap.data().name);
@@ -89,7 +93,7 @@ export default function StoreSide() {
       setCurrency(docSnap.data().currency);
     }
     Temp();
-  }, [secondPress]);
+  }, [secondPress, user]);
 
   const SCWIDTH = Dimensions.get("window").width;
   return (

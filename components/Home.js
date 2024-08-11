@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useContext, useCallback } from "react";
+import { useNavigation, useIsFocused, } from "@react-navigation/native";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -17,6 +17,7 @@ import {
   FlatList,
   Dimensions,
   Keyboard,
+  RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
@@ -44,6 +45,20 @@ export default function Home() {
   const [searchVal, setSearchVal] = useState("");
   const [dataSearch, setDataSearch] = useState([]);
   const [user, setUser] = useState(value.params.user);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing2, setRefreshing2] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  }, []);
+  const onRefresh2 = useCallback(() => {
+    setRefreshing2(true);
+    setTimeout(() => {
+      setRefreshing2(false);
+    }, 1000);
+  }, []);
 
   useEffect(() => {
     const ref = collection(db, "stores");
@@ -65,7 +80,7 @@ export default function Home() {
       });
     }
     Temp();
-  }, []);
+  }, [refreshing, user]);
 
   useEffect(() => {
     const ref = collection(db, "stores");
@@ -86,7 +101,7 @@ export default function Home() {
       });
     }
     Temp();
-  }, [searchVal]);
+  }, [searchVal, refreshing2]);
 
   function renderCard({ item }) {
     return (
@@ -761,7 +776,9 @@ export default function Home() {
         />
       </View>
       {!focused ? (
-        <ScrollView style={{ height: "100%" }}>
+        <ScrollView style={{ height: "100%" }} refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
           <Text
             style={{
               marginLeft: "5%",
@@ -1006,6 +1023,9 @@ export default function Home() {
             data={dataSearch}
             keyExtractor={(item) => item.id}
             renderItem={render2List}
+            refreshControl={
+              <RefreshControl refreshing={refreshing2} onRefresh={onRefresh2} />
+            }
             ListFooterComponent={() => {
               return (
                 <View

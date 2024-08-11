@@ -1,6 +1,6 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useIsFocused} from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback} from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   KeyboardAvoidingView,
@@ -18,6 +18,7 @@ import {
   Dimensions,
   Keyboard,
   Modal,
+  RefreshControl
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
@@ -54,6 +55,19 @@ export default function OrderList() {
   const [val, setVal] = useState("");
   const [name, setName] = useState("");
   const [pressed, setPressed] = useState(true);
+  const isFocused = useIsFocused();
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    setUser(value.params.user);
+  }, [isFocused])
+
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "users", user);
@@ -75,7 +89,7 @@ export default function OrderList() {
       });
     }
     Temp();
-  }, [pressed]);
+  }, [pressed, refreshing, user]);
   useEffect(() => {
     const ref = collection(db, "orders");
     const qsearch = query(ref, where("user", "==", user));
@@ -161,6 +175,9 @@ export default function OrderList() {
       </Text>
       <SwipeListView
         data={orders}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         keyExtractor={(item) => item.id}
         renderItem={(data, rowMap) => {
           return (

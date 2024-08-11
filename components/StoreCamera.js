@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useContext, useCallback, } from "react";
+import { useNavigation, useIsFocused, } from "@react-navigation/native";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -41,10 +41,17 @@ export default function StoreCamera() {
   const navigation = useNavigation();
   const [permission, requestPermission] = useCameraPermissions();
   const [vis, setVis] = useState(false);
+  const isFocused = useIsFocused();
+  const value = useContext(NetworkContext);
+  const [user, setUser] = useState(value.params.user);
 
   useEffect(() => {
     requestPermission();
   });
+
+  useEffect(() => {
+    setUser(value.params.user);
+  }, [isFocused])
 
   function isAlphaNumeric(str) {
     var code, i, len;
@@ -114,17 +121,25 @@ export default function StoreCamera() {
       <CameraView
         style={{ flex: 1 }}
         facing={"back"}
-        onBarCodeScanned={async (scanned) => {
+        barcodeScannerSettings={{
+          barcodeTypes: ["qr"],
+        }}
+        onBarcodeScanned={async (scanned) => {
           const id = scanned.data;
           if (!isAlphaNumeric(id)) {
             setVis(true);
           } else {
-            const ordersRef = doc(db, "orders", id);
-            const orderSnap = getDoc(ordersRef);
-            if (orderSnap.exists) {
-              navigation.navigate("StoreOrderDetails", { id: id });
-            } else {
+            const ordersRef = doc(db, "stores", user);
+            const orderSnap = await getDoc(ordersRef);
+            try {
+              if (orderSnap.data().orders.includes(id)) {
+                navigation.navigate("StoreOrderDetails", { id: id });
+              } else {
+                setVis(true);
+              }
+            } catch(error) {
               setVis(true);
+              throw(error);
             }
           }
         }}

@@ -1,7 +1,7 @@
-import { NavigationContainer, useIsFocused } from "@react-navigation/native";
+import { NavigationContainer} from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState, useContext, useEffect, useRef } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useContext, useEffect, useRef, useCallback, } from "react";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -19,6 +19,7 @@ import {
   Keyboard,
   Modal,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
@@ -50,13 +51,25 @@ export default function Favourites() {
   const [vis2, setVis2] = useState(false);
   const [pur, setPur] = useState(1);
   const value = useContext(NetworkContext);
-  const user = value.params.user;
+  const [user, setUser] = useState(value.params.user);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const [focused, setFocused] = useState(false);
   const [valoo, setValoo] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [tag, setTag] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    setUser(value.params.user);
+  }, [isFocused])
+
   useEffect(() => {
     async function Temp() {
       const docRef = doc(db, "users", user);
@@ -80,7 +93,7 @@ export default function Favourites() {
       });
     }
     Temp();
-  }, [changed, isFocused, val]);
+  }, [changed, val, refreshing, user]);
   return (
     <View style={{ height: "100%", width: "100%" }}>
       <Modal transparent={true} visible={vis} animationType="fade">
@@ -411,6 +424,9 @@ export default function Favourites() {
       </Text>
       <FlatList
         data={data}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           return (

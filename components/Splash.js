@@ -43,16 +43,17 @@ export default function Splash() {
           async function Temp() {
             const docRef = doc(db, "users", user.uid);
             const docSnap = await getDoc(docRef);
-            if (docSnap.type) {
-              navigation.navigate("TabNav2", {
-                screen: "Store",
-                user: user.uid,
-              });
-            } else {
+            if (docSnap.exists()) {
               navigation.navigate("TabNav", {
                 screen: "Home",
                 user: user.uid,
               });
+            } else {
+              navigation.navigate("TabNav2", {
+                screen: "Store",
+                user: user.uid,
+              });
+              
             }
           }
           Temp();
@@ -74,9 +75,8 @@ export default function Splash() {
         justifyContent: "center",
         alignItems: "center",
       }}
-    ></View>
+    >
+      <Image source={require("../assets/logo.png")} style={{width: 100, height: 100}}/>
+    </View>
   );
 }
-
-// 6210 LINES OF CODE
-// JKLDGFHSJ IM FINALLY DONE HELP
